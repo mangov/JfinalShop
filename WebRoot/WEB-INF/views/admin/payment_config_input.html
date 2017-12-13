@@ -1,0 +1,160 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '添加/编辑支付方式', validatorJS: true}){}%>
+<script>
+$().ready( function() {
+  var $paymentConfigTypeSelect = $("select[name='paymentConfigType']");
+  var $tenpayConfigTr = $(".tenpayConfigTr");
+  var $alipayConfigTr = $(".alipayConfigTr");
+  // 根据支付类型显示/隐藏输入项
+  $paymentConfigTypeSelect.change( function() {
+    var $this = $(this);
+	if ($this.val() == "tenpay") {
+	  $tenpayConfigTr.show();
+	  $alipayConfigTr.hide();
+	} else if($this.val() == "alipay") {
+	  $alipayConfigTr.show();
+	  $tenpayConfigTr.hide();
+	} else {
+	  $tenpayConfigTr.hide();
+	  $alipayConfigTr.hide();
+	}
+  });
+});
+</script>
+<%var isAdd = false;
+  var isEdit = false;
+  if(isEmpty(paymentConfig.id)){
+	isAdd = true;
+  }else{
+	isEdit = true;
+  }%>
+</head>
+<body>
+<!-- content start -->
+<div class="admin-content">
+  <div class="admin-content-body">
+    <div class="am-cf app-padding-title">
+      <div class="am-fl am-cf">
+        <strong class="am-text-primary am-text-lg">网站设置</strong> / <small><%if(isAdd){%>添加支付方式<%}else{%>编辑支付方式<%}%></small>
+      </div>
+    </div>
+  
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+    
+    <form class="validator-form" class="am-form" action="<%if (isAdd){%>${base}/paymentConfig/save<%}else{%>${base}/paymentConfig/update<%}%>" method="post">
+    <input type="hidden" name="paymentConfig.id" value="${paymentConfig.id!}" />
+    <div class="am-form am-margin am-form-horizontal" >
+      <div class="am-form-group am-form-group-sm" id="productTypeTr">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">支付类型</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <select name="paymentConfigType" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}" required>
+            <option value=""></option>
+            <%for(list in allPaymentConfigType){%>
+			<option value="${list}"<%if (list == paymentConfig.paymentConfigType!){%> selected<%}%>>
+			  ${i18n("PaymentConfigType." + list)}
+			</option>
+			<%}%>
+          </select>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">支付方式名称</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="text" class="am-form-field" name="paymentConfig.name" value="${paymentConfig.name!}" required />
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">支付手续费设置</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <%for(list in allPaymentFeeType){%>
+          <label class="am-radio-inline">
+            <input type="radio" name="paymentFeeType" value="${list}"<%if (listLP.index == 1){%> required<%}%><%if ((isAdd && list == "scale") || list == paymentConfig.paymentFeeType!){%> checked<%}%>>
+            ${i18n("PaymentFeeType." + list)}
+          </label>
+          <%}%>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">支付费率/固定费用</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="number" class="am-form-field" name="paymentConfig.paymentFee" value="${paymentConfig.paymentFee!0}" min="0" required />
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm tenpayConfigTr<%if (isAdd || paymentConfig.paymentConfigType != "tenpay"){%> hidden<%}%>">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">财付通交易类型</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <select name="tenpayType" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}">
+            <option value=""></option>
+            <%for(list in allTenpayType){%>
+			<option value="${list}"<%if (list == tenpayConfig.tenpayType!){%> selected<%}%>>
+		      ${i18n("TenpayType." + list)}
+			</option>
+		    <%}%>
+          </select>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm tenpayConfigTr<%if (isAdd || paymentConfig.paymentConfigType != "tenpay"){%> hidden<%}%>">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">财付通商户号</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="text" class="am-form-field" name="tenpayConfig.bargainorId" value="${tenpayConfig.bargainorId!}">
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm tenpayConfigTr<%if (isAdd || paymentConfig.paymentConfigType != "tenpay"){%> hidden<%}%>">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">财付通密钥</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="text" class="am-form-field" name="tenpayConfig.key" value="${tenpayConfig.key!}">
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm alipayConfigTr<%if (isAdd || paymentConfig.paymentConfigType != "alipay"){%> hidden<%}%>">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">支付宝交易类型</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <select name="alipayType" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}">
+            <option value=""></option>
+            <%for(list in allAlipayType){%>
+			<option value="${list}"<%if (list == alipayConfig.alipayType!){%> selected<%}%>>
+			  ${i18n("AlipayType." + list)}
+			</option>
+			<%}%>
+          </select>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm alipayConfigTr<%if (isAdd || paymentConfig.paymentConfigType != "alipay"){%> hidden<%}%>">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">支付宝商户号</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="text" class="am-form-field" name="alipayConfig.bargainorId" value="${alipayConfig.bargainorId!}">
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm alipayConfigTr<%if (isAdd || paymentConfig.paymentConfigType != "alipay"){%> hidden<%}%>">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">支付宝密钥</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="text" class="am-form-field" name="alipayConfig.key" value="${alipayConfig.key!}">
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">排序</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="number" class="am-form-field" name="paymentConfig.orderList" value="${paymentConfig.orderList!50}" placeholder="只允许输入零或正整数" min="0" max="1000" required />
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">介绍</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <textarea rows="10" class="am-form-field" name="paymentConfig.description">${paymentConfig.description!}</textarea>
+        </div>
+      </div>
+      <hr data-am-widget="divider" class="am-divider am-divider-dashed" />
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-8 am-u-sm-offset-4 am-u-md-9 am-u-md-offset-3">
+          <button type="submit" class="am-btn am-btn-primary"><span class="am-icon-save">  保  存</span></button>
+          <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div> 
+</div>
+<!-- content end -->
+</body>
+</html>

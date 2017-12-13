@@ -1,0 +1,80 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '查看发货单'}){}%>
+</head>
+<body>
+<!-- content start -->
+<div class="admin-content">
+  <div class="admin-content-body">
+    <div class="am-cf app-padding-title">
+      <div class="am-fl am-cf">
+        <strong class="am-text-primary am-text-lg">订单管理</strong> / <small>查看发货单</small>
+      </div>
+    </div>
+
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+    
+    <div class="am-g am-u-sm-12 am-margin">
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">发货编号</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p>&nbsp;${shipping.shippingSn!}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">订单编号</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p>&nbsp;${shipping.order.orderSn!}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">发货日期</div>
+	  <div class="am-u-sm-8 am-u-md-10"><p>&nbsp;${shipping.createDate,dateFormat="yyyy-MM-dd HH:mm:ss"}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">配送方式名称</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p>&nbsp;${shipping.deliveryTypeName}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">物流公司名称</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p>&nbsp;${shipping.deliveryCorpName}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">物流编号</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p>&nbsp;${shipping.deliverySn}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">物流费用</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p class="am-text-danger">${shipping.deliveryFee,orderUnitCurrencyFormat}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">收货人姓名</div>
+	  <div class="am-u-sm-8 am-u-md-10"><p>&nbsp;${shipping.shipName}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">收货地区</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p>&nbsp;${shipping.shipArea}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">邮编</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p>&nbsp;${shipping.shipZipCode}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">收货地址</div>
+	  <div class="am-u-sm-8 am-u-md-10"><p>&nbsp;${shipping.shipAddress}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">电话</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p>&nbsp;${shipping.shipPhone}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">手机</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p>&nbsp;${shipping.shipMobile}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">备注</div>
+	  <div class="am-u-sm-8 am-u-md-10"><p>&nbsp;${shipping.memo}</p></div>
+    </div>
+    
+    <hr data-am-widget="divider" class="am-divider am-divider-dotted" />
+    <div class="am-g am-u-sm-12 am-padding-0 am-margin-0">
+      <div class="am-scrollable-horizontal">
+      <table class="am-table am-table-striped am-table-hover table-main am-text-nowrap">
+        <thead>
+          <tr>
+            <th class="am-kai">货号</th>
+		    <th class="am-kai">商品名称</th>
+		    <th class="am-kai">发货数</th>
+	      </tr>
+		</thead>
+	    <tbody>
+	      <%for(list in shipping.deliveryItem){%>
+		  <tr>
+		    <td><a href="${base}${list.productHtmlFilePath}" target="_blank">${list.productSn}</a></td>
+			<td><a href="${base}${list.productHtmlFilePath}" target="_blank">${list.productName}</a></td>
+			<td>${list.deliveryQuantity}</td>
+	      </tr>
+		  <%}%>    
+		</tbody>
+	  </table>
+	  </div>	            
+	</div>
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed" />
+    <div class="am-margin">
+      <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+    </div>
+  </div>
+</div>
+<!-- content end -->
+</body>
+</html>

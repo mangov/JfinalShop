@@ -1,0 +1,28 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+<% include("/common/shop_head.html"){}%>
+</head>
+<body>
+<%include("/shop/header.html"){}%>
+<div class="am-cf shop-main">
+  <!-- content start -->
+  <div class="shop-content">
+    <div class="shop-content-body">
+		<div class="paymentResultDetail">
+			<#if paymentResult == "success">
+				<span class="icon success">&nbsp;</span>在线支付成功，支付总金额<span class="red">${(amountPayable + paymentFee)?string(orderUnitCurrencyFormat)}
+			<#else>
+				<span class="icon warn">&nbsp;</span>支付发生错误！
+			</#if>
+			<div class="buttonArea">
+				<input type="submit" class="formButton" onclick="location.href='${base}/'" value="返回首页" />
+			</div>
+		</div>
+    </div>
+    <%include("/shop/footer.html"){}%>
+  </div>
+  <!-- content end -->
+</div>
+</body>
+</html>

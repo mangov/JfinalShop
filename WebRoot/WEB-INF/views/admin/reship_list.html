@@ -1,0 +1,105 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '退货单列表', loadListJS: true}){}%>
+</head>
+<body>
+  <div class="admin-content">
+    <div class="admin-content-body">
+      <div class="am-cf app-padding-title">
+        <div class="am-fl am-cf">
+          <strong class="am-text-primary am-text-lg">订单管理</strong> / <small>退货单列表</small>
+        </div>
+      </div>
+      
+      <hr data-am-widget="divider" class="am-divider am-divider-dotted am-margin-0" />
+      
+      <form class="am-form" id="listForm" action="${base}/reship/list" method="post">
+      <div class="am-g app-padding-toolbar">
+        <div class="am-u-sm-6 am-u-md-4">
+          <div class="am-btn-toolbar app-padding-toolbar-item">
+            <div class="am-btn-group am-btn-group-sm">
+              <button type="button" class="am-btn am-btn-default" onclick="deleteAll('${base}/reship/delete');" id="deleteButton" disabled="disabled"><span class="am-icon-trash-o"></span> 删除</button>
+            </div>
+          </div>
+        </div>
+        <div class="am-u-sm-6 am-u-md-4 am-padding-0">
+          <div class="app-padding-toolbar-item">
+            <select name="property" data-am-selected="{btnWidth: '100%', btnSize: 'sm', maxHeight: '100px'}">
+              <option value="reshipSn" <%if(property! == "reshipSn"){%>selected="selected" <%}%>>退货编号</option>
+    		  <option value="deliverySn" <%if(property! == "deliverySn"){%>selected="selected" <%}%>>物流编号</option>
+    		  <option value="shipName" <%if(property! == "shipName"){%>selected="selected" <%}%>>退货人姓名</option>
+    		  <option value="shipArea" <%if(property! == "shipArea"){%>selected="selected" <%}%>>退货地区</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="am-u-sm-12 am-show-sm-only am-margin-xs"></div>
+        
+        <div class="am-u-sm-12 am-u-md-4 am-padding-right-0">
+          <div class="am-input-group am-input-group-sm">
+            <input type="text" class="am-form-field" name="keyword" value="${keyword!}" />
+            <span class="am-input-group-btn">
+              <button id="searchButton" class="am-btn am-btn-default" type="button">搜索</button>
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+      
+      <div class="am-scrollable-horizontal">
+        <table class="am-table am-table-striped am-table-hover table-main am-text-nowrap am-margin-bottom-0">
+          <thead>
+            <tr>
+              <th><input type="checkbox" id="allCheck"></th>
+              <th>序号</th>
+              <th><div class="app-table-td-buttons-width-50">操作</div></th>
+              <th>退货编号</th>
+              <th>配送方式名称</th>
+              <th>物流公司名称</th>
+              <th>物流编号</th>
+              <th>物流费用</th>
+              <th>退货人姓名</th>
+              <th>退货地区</th>
+              <th>退货时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%for(list in pager.list){%>
+            <tr>
+              <td><input type="checkbox" name="ids" value="${list.id}"></td>              
+              <td>${listLP.index}</td> 
+              <td>
+                <div class="am-btn-group am-btn-group-xs">
+                  <button type="button" class="am-btn am-btn-default am-btn-xs am-text-success app-table-button-padding" onclick="location.href='${base}/reship/view?id=${list.id}'">
+                    <span class="am-icon-file-o"> 查看</span>
+                  </button>
+                </div>
+              </td>             
+              <td>${list.reshipSn}</td>
+              <td>${list.deliveryTypeName}</td>
+              <td>${list.deliveryCorpName}</td>
+              <td>${list.deliverySn}</td>
+              <td>${list.deliveryFee,orderUnitCurrencyFormat}</td>
+              <td>${list.shipName}</td>
+              <td>${list.shipArea}</td>
+              <td>${list.createDate,"yyyy-MM-dd HH:mm:ss"}</td>
+            </tr>
+            <%}%> 
+          </tbody>
+        </table>
+      </div>
+      <!-- 分页 -->
+      <%if (pager.list.~size > 0){%>
+      <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />    
+      <div class="am-margin-left am-text-xs"><% include("/admin/pager.html"){}%></div>
+      <%}else{%>
+      <h3 class="am-kai am-text-center am-margin-xs">没有找到任何记录!</h3>
+      <%}%>
+      </form>
+    </div>
+  </div>
+<!-- content end -->
+</body>
+</html>

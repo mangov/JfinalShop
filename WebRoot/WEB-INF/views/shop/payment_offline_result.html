@@ -1,0 +1,28 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+<% include("/common/shop_head.html"){}%>
+</head>
+<body>
+<%include("/shop/header.html"){}%>
+<div class="am-cf shop-main">
+  <!-- content start -->
+  <div class="shop-content">
+    <div class="shop-content-body">
+		<div class="paymentResultDetail">
+			<%if (paymentResult == "success"){%>
+				<span class="icon success">&nbsp;</span>请根据您选择的支付方式来选择银行汇款。汇款以后，请立即通知我们，支付总金额<span class="red">${amountPayable + paymentFee,orderUnitCurrencyFormat}</span>
+			<%}else{%>
+				<span class="icon error">&nbsp;</span>支付错误</span>
+			<%}%>
+			<div class="buttonArea">
+				<input type="submit" class="formButton" onclick="location.href='${base}/'" value="返回首页" />
+			</div>
+		</div>
+		</div>
+    <%include("/shop/footer.html"){}%>
+  </div>
+  <!-- content end -->
+</div>
+</body>
+</html>

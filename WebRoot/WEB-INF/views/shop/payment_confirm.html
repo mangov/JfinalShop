@@ -1,0 +1,46 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+<% include("/common/shop_head.html"){}%>
+</head>
+<body>
+<%include("/shop/header.html"){}%>
+<div class="am-cf shop-main">
+  <!-- content start -->
+  <div class="shop-content">
+    <div class="shop-content-body">
+      <div class="am-margin am-text-xs">
+        <div class="am-panel am-panel-default">
+          <div class="am-panel-bd">
+            <form action="${base}/shop/payment/gateway" method="post">
+            <input type="hidden" name="paymentType" value="${paymentType!}" />
+            <input type="hidden" name="amountPayable" value="${amountPayable!}" />
+            <input type="hidden" name="paymentConfig.id" value="${paymentConfig.id!}" />
+            <input type="hidden" name="order.id" value="${order.id!}" />
+            <p>
+              尊敬的<strong class="am-text-success">${loginMember.username}</strong>，
+              您选择的支付方式为：<strong>${paymentConfig.name}</strong>
+              <%if (order! != null){%><a class="am-badge am-badge-primary" href="${base}/shop/order/view?id=${order.id}">查看订单详情</a><%}%>
+            </p>
+            <p>
+              支付总金额：<strong class="am-text-danger">${(amountPayable + paymentFee),orderUnitCurrencyFormat}</strong>
+              <%if (paymentConfig.paymentFeeType == "scale" && paymentConfig.paymentFee != 0){%>
+              [含支付手续费费率：${paymentConfig.paymentFee}%]
+              <%}else if (paymentConfig.paymentFeeType == "fixed" && paymentConfig.paymentFee != 0){%>
+              [含支付手续费：${paymentConfig.paymentFee,orderUnitCurrencyFormat}]
+              <%}%>
+            </p>
+            <p>
+              <button type="submit" class="am-btn am-btn-primary am-btn-xs">确认支付</button>
+            </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%include("/shop/footer.html"){}%>
+  </div>
+  <!-- content end -->
+</div>
+</body>
+</html>

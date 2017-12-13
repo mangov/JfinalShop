@@ -1,0 +1,407 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '编辑订单', validatorJS: true, livequeryJS: true, metadataJS: true, lSelectJS: true}){}%>
+</head>
+<body>
+<!-- content start -->
+<div class="admin-content">
+  <div class="admin-content-body">
+    <div class="am-cf app-padding-title">
+      <div class="am-fl am-cf">
+        <strong class="am-text-primary am-text-lg">商品管理</strong> / <small>编辑订单</small>
+      </div>
+    </div>
+
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+		
+    <form class="validator-form" action="${base}/order/update" method="post">
+	<input type="hidden" name="orders.id" value="${orders.id!}" />
+    <div class="am-tabs am-margin" data-am-tabs="{noSwipe: 1}">
+      <ul class="am-tabs-nav am-nav am-nav-tabs">
+        <li class="am-active"><a href="#tab1">订单信息</a></li>
+        <li><a href="#tab2">商品信息</a></li>
+      </ul>
+
+      <div class="am-tabs-bd am-form">
+        <div class="am-tab-panel am-fade am-in am-active am-form-horizontal" id="tab1">
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right">订单编号</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              ${orders.orderSn}
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right">下单时间</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              ${orders.createDate,dateFormat="yyyy-MM-dd HH:mm:ss"}
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right">商品总金额</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <span id="productTotalPrice" class="am-text-danger">${orders.productTotalPrice,orderUnitCurrencyFormat}</span>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right">订单总金额</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <span id="totalAmount" class="am-text-danger">${orders.totalAmount,orderUnitCurrencyFormat}</span>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">配送方式</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <select name="orders.deliveryType_id" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}" required>
+                <option value=""></option>
+                <%for(list in allDeliveryType){%>
+				<option value="${list.id}"<%if (list == orders.deliveryType){%> selected<%}%>>
+				  ${list.name}
+				</option>
+			    <%}%>
+              </select>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">支付方式</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <select name="orders.paymentConfig_id" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}">
+                <option value="">货到付款</option>
+                <%for(list in allPaymentConfig){%>
+				<option value="${list.id}"<%if (list == orders.paymentConfig){%> selected<%}%>>
+				  ${list.name}
+				</option>
+				<%}%>
+              </select>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">配送费用</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="number" class="am-form-field" name="orders.deliveryFee" value="${orders.deliveryFee}" min="0" required />
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">支付手续费</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="number" class="am-form-field" name="orders.paymentFee" value="${orders.paymentFee}" min="0" required />
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">商品重量</label>
+            <div class="am-u-sm-5 am-u-md-7">
+              <input type="number" class="am-form-field" name="orders.productWeight" value="${orders.productWeight}" min="0" required />
+            </div>
+            <div class="am-u-sm-3 am-u-md-2">
+              <select name="productWeightUnit" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}" required>
+                <%for(list in allWeightUnit){%>
+				<option value="${list}"<%if (list == orders.productWeightUnit){%> selected <%}%>>
+				  ${i18n("WeightUnit." + list)}
+				</option>
+				<%}%>
+              </select>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right">附言</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              ${orders.memo!"&nbsp;"}
+            </div>
+          </div>
+          <hr data-am-widget="divider" class="am-divider am-divider-dotted" />
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">收货人姓名</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="text" class="am-form-field" name="orders.shipName" value="${orders.shipName}" required />
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm am-margin-bottom-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">收货地区</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="hidden" name="orders.shipAreaPath" class="areaSelect" value="${orders.shipAreaPath!}" required />
+            </ul>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">收货地址</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="text" class="am-form-field" name="orders.shipAddress" value="${orders.shipAddress}" required />
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">邮编</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="text" class="am-form-field js-pattern-zipCode" name="orders.shipZipCode" value="${orders.shipZipCode}" required />
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">电话</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="text" class="am-form-field js-pattern-phone" name="orders.shipPhone" value="${orders.shipPhone}" placeholder="电话、手机必须填写其中一项！">
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">手机</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="text" class="am-form-field js-pattern-mobile" name="orders.shipMobile" value="${orders.shipMobile}" placeholder="电话、手机必须填写其中一项！" required>
+            </div>
+          </div>
+          <hr data-am-widget="divider" class="am-divider am-divider-dotted" />
+		  <%if (!isEmpty(orders.member.id)){%>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right">用户名</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              ${orders.member.username}
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right">会员等级</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              ${orders.member.memberRank.name}
+			  <%if (orders.member.memberRank.preferentialScale != 100){%>
+			  <span class="am-text-danger">[优惠百分比：${orders.member.memberRank.preferentialScale}%]</span>
+			  <%}%>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right">E-mail</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              ${orders.member.email}
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right">最后登录IP</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              ${orders.member.loginIp}
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right">预存款余额</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              ${orders.member.deposit.balance!,orderUnitCurrencyFormat}
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right">积分</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              ${orders.member.point}
+            </div>
+          </div>
+		  <%}else{%>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right">会员状态</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <span class="am-text-danger">会员不存在</span>
+            </div>
+          </div>
+		  <%}%>
+        </div>
+        
+        <div class="am-tab-panel am-fade am-form-horizontal" id="tab2">
+          <div class="am-g am-u-sm-12 am-padding-0 am-margin-0">
+            <div class="am-scrollable-horizontal">
+            <!-- 商品信息 -->
+            <table class="am-table am-table-striped am-table-hover table-main am-text-nowrap">
+              <thead>
+                <tr>
+                  <th>货号</th>
+				  <th>商品名称</th>
+				  <th>价格</th>
+				  <th>购买数量</th>
+				  <th>删除</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 统计行数，后台取Model用 -->
+				<input type="hidden" name="orderItemSize" value="${orders.orderItemList.~size}" />
+                <%for(list in orders.orderItemList){%>
+                <tr>
+                  <td>
+                    <input type="hidden" name="orderItem[${listLP.index}].id" value="${list.id}" />
+                    <a href="${base}${list.productHtmlFilePath}" target="_blank">
+                      ${list.productSn}
+                    </a>
+                  </td>
+                  <td>
+                    <a href="${base}${list.productHtmlFilePath}" target="_blank">
+                      <div class="am-text-truncate app-text-truncate-product-name">${list.productName}</div>
+                    </a>
+                  </td>
+                  <td>
+                    <input type="number" class="am-input am-padding-0 productPrice" name="orderItem[${listLP.index}].productPrice" value="${list.productPrice}" style="width: 100px;" min="0" required />
+                  </td>
+                  <td>
+                    <%if (list.product.store != null){%>
+                      <%if ((systemConfig.storeFreezeTime == "payment" && orders.paymentStatus == "unpaid") || (systemConfig.storeFreezeTime == "ship" && orders.shippingStatus == "unshipped")){%>
+                        <% availableStore = list.product.store - list.product.freezeStore; %>
+                      <%}else{%>
+                        <% availableStore = list.product.store - list.product.freezeStore + list.productQuantity; %>
+                      <%}%>
+                    <%}%>
+                    <input type="number" class="am-input am-padding-0 productQuantity" name="orderItem[${listLP.index}].productQuantity" min="1" max="${list.deliveryQuantity}}" value="${list.productQuantity}" style="width: 100px;" required />
+                  </td>
+                  <td>
+                    <div class="am-btn-group am-btn-group-xs">
+                      <button type="button" class="am-btn am-btn-default am-btn-xs am-text-danger app-table-button-padding deleteOrderItem">
+                        <span class="am-icon-trash-o"> 删除</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr> 
+                <%}%>               
+              </tbody>
+              </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="am-margin">
+      <button type="submit" class="am-btn am-btn-primary"><span class="am-icon-save">  保  存</span></button>
+      <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+    </div>
+    </form>
+  </div>
+</div>
+<!-- content end -->
+<script>
+$().ready( function() {
+    
+    var productTotalPrice = parseFloat("${orders.productTotalPrice}");// 商品总价格
+    var deliveryFee = parseFloat("${orders.deliveryFee}");// 配送费用
+    var paymentFee = parseFloat("${orders.paymentFee}");// 支付费用
+    
+    var $productTotalPrice = $("#productTotalPrice");
+    var $totalAmount = $("#totalAmount");
+    var $deliveryFeeInput = $("input[name='orders.deliveryFee']");
+    var $paymentFeeInput = $("input[name='orders.paymentFee']");
+    var $productPriceInput = $("input.productPrice");
+    var $productQuantityInput = $("input.productQuantity");
+    var $deleteOrderItem = $(".deleteOrderItem");
+    
+    // 地区选择菜单
+    $(".areaSelect").lSelect({
+        url: "${base}/area/ajaxChildrenArea"// Json数据获取url
+    });
+    
+    // 修改商品总价格
+    function modifyProductTotalPrice() {
+        productTotalPrice = 0.0;
+        $productPriceInput.each(function(){
+            var productPrice = $(this).val();
+            var productQuantity = $(this).parent().parent().find("input.productQuantity").val();
+            productTotalPrice = floatAdd(productTotalPrice, floatMul(productPrice, productQuantity));
+        });
+        $productTotalPrice.text(priceUnitCurrencyFormat(productTotalPrice));
+    }
+    
+    // 修改订单总金额
+    function modifyTotalAmount() {
+        var totalAmount = floatAdd(floatAdd(productTotalPrice, deliveryFee), paymentFee);
+        $totalAmount.text(priceUnitCurrencyFormat(totalAmount));
+    }
+    
+    // 根据配送费用修改订单总金额
+    $deliveryFeeInput.change( function() {
+        $this = $(this);
+        var deliveryFeeValue = $this.val();
+        var reg = /^(([0-9]+\.?[0-9]+)|[0-9])$/;
+        if (!reg.test(deliveryFeeValue)) {
+            $this.val(deliveryFee);
+            $.tip("配送费用输入有误！");
+        } else {
+            deliveryFee = deliveryFeeValue;
+            modifyTotalAmount();
+        }
+    });
+    
+    // 根据支付费用修改订单总金额
+    $paymentFeeInput.change( function() {
+        $this = $(this);
+        var paymentFeeValue = $this.val();
+        var reg = /^(([0-9]+\.?[0-9]+)|[0-9])$/;
+        if (!reg.test(paymentFeeValue)) {
+            $this.val(paymentFee);
+            $.tip("支付手续费输入有误！");
+        } else {
+            paymentFee = paymentFeeValue;
+            modifyTotalAmount();
+        }
+    });
+    
+    // 记录初始商品价格
+    $productPriceInput.each(function(){
+        $this = $(this);
+        $this.data("previousProductPrice", $this.val());
+    });
+    
+    // 记录初始商品购买数
+    $productQuantityInput.each(function(){
+        $this = $(this);
+        $this.data("previousProductQuantity", $this.val());
+    });
+    
+    // 根据商品价格修改商品总价格、订单总金额
+    $productPriceInput.change( function() {
+        $this = $(this);
+        var productPriceValue = $this.val();
+        var reg = /^(([0-9]+\.?[0-9]+)|[0-9])$/;
+        if (!reg.test(productPriceValue)) {
+            var previousProductPrice = $this.data("previousProductPrice");
+            $this.val(previousProductPrice);
+            $.tip("商品价格输入有误！");
+        } else {
+            $this.data("previousProductPrice", productPriceValue);
+            modifyProductTotalPrice();
+            modifyTotalAmount();
+        }
+    });
+    
+    // 根据商品数量修改商品总价格、订单总金额
+    $productQuantityInput.change( function() {
+        $this = $(this);
+        var productQuantityValue = $this.val();
+        var availableStore = $this.metadata().availableStore;
+        var reg = /^[0-9]*[1-9][0-9]*$/;
+        if (!reg.test(productQuantityValue)) {
+            var previousProductQuantity = $this.data("previousProductQuantity");
+            $this.val(previousProductQuantity);
+            $.tip("商品数量输入有误！");
+        } else {
+            if (availableStore != null && parseInt(productQuantityValue) > parseInt(availableStore)) {
+                var previousProductQuantity = $this.data("previousProductQuantity");
+                $this.val(previousProductQuantity);
+                $.tip("商品数量超出可用库存数！");
+                return false;
+            }
+            $this.data("previousProductQuantity", productQuantityValue);
+            modifyProductTotalPrice();
+            modifyTotalAmount();
+        }
+    });
+    
+    // 删除订单项
+    $deleteOrderItem.click( function() {
+        $this = $(this);
+        if ($productPriceInput.length == 1) {
+            Modal.alert("请保留至少一个商品！");
+            return false;
+        }
+        Modal.confirm("您确定要移除此商品吗？",{
+          relatedTarget: this,
+          onConfirm: function(options) {
+            $this.parent().parent().parent().remove();
+            $productPriceInput = $("input.productPrice");
+            $productQuantityInput = $("input.productQuantity");
+            modifyProductTotalPrice();
+            modifyTotalAmount();
+          }
+        });
+        return false;
+    });
+
+});
+</script>
+</body>
+</html>

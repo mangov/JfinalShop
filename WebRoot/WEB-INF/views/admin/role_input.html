@@ -1,0 +1,85 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '添加/编辑角色', validatorJS: true}){}%>
+<%var isAdd = false;
+  var isEdit = false;
+  if(isEmpty(role.id)){
+	isAdd = true;
+  }else{
+	isEdit = true;
+  }%>
+</head>
+<body>
+<!-- content start -->
+<div class="admin-content">
+  <div class="admin-content-body">
+    <div class="am-cf app-padding-title">
+      <div class="am-fl am-cf">
+        <strong class="am-text-primary am-text-lg">系统管理</strong> / <small><%if(isAdd){%>添加角色<%}else{%>编辑角色<%}%></small>
+      </div>
+    </div>
+    
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+    
+    <form class="validator-form" action="<%if (isAdd){%>${base}/role/save<%}else{%>${base}/role/update<%}%>" method="post">
+    <input type="hidden" name="role.id" value="${role.id!}" />
+    <div class="am-tabs am-margin" data-am-tabs="{noSwipe: 1}">
+      <ul class="am-tabs-nav am-nav am-nav-tabs">
+        <li class="am-active"><a href="#tab1">基本信息</a></li>
+        <li><a href="#tab2">分配资源</a></li>
+      </ul>
+      
+      <div class="am-tabs-bd am-form">
+        <div class="am-tab-panel am-fade am-in am-active am-form-horizontal" id="tab1">
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">角色名称</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="text" class="am-form-field" name="role.name" value="${role.name!}" required />
+              <div class="am-text-warning am-margin-top-xs am-text-xs">${nameMessages!}</div>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">角色标识</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="text" class="am-form-field" name="role.value" value="${role.value!'ROLE_'}" placeholder="必须以ROLE_开头" pattern="^(ROLE_.*)$" minlength="6" maxlength="20" required />
+              <div class="am-text-warning am-margin-top-xs am-text-xs">${valueMessages!}</div>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">描述</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="text" class="am-form-field" name="role.description" value="${role.description!}" />
+            </div>
+          </div>
+        </div>
+        
+        <div class="am-tab-panel am-fade am-form-horizontal" id="tab2">
+          <div class="am-form-group am-form-group-sm">
+            <div class="am-u-sm-12 am-u-md-12">
+              <%for(list in allResource){%>
+			  <label class="am-checkbox-inline">
+                <input type="checkbox" name="resourceIds" class="am-input-sm" value="${list.id!}"
+			    <% if(isEdit){
+				  var resourceList = role.resourceList;
+				  for(var i = 0; i < resourceList.~size; i++){
+				    if (strutil.contain(resourceList[i].id,list.id)){%> checked="checked"
+                <%}}}%>/>
+				${list.name!}
+			  </label>
+			  <%}%>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="am-margin">
+      <button type="submit" class="am-btn am-btn-primary"><span class="am-icon-save">  保  存</span></button>
+      <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+    </div>
+    </form>
+  </div>
+</div>
+<!-- content end -->
+</body>
+</html>

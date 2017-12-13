@@ -1,0 +1,52 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '编辑底部信息', loadUE: true}){}%>
+</head>
+<body>
+<!-- content start -->
+<div class="admin-content">
+  <div class="admin-content-body">
+    <div class="am-cf app-padding-title">
+      <div class="am-fl am-cf">
+        <strong class="am-text-primary am-text-lg">内容管理</strong> / <small>编辑底部信息</small>
+      </div>
+    </div>
+  
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+    
+    <form class="validator-form" action="${base}/footer/update" method="post">
+    <input type="hidden" name="footer.id" value="${footer.id!1}" />
+    <div class="am-form am-margin am-margin-horizontal-0 am-form-horizontal">
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-12 am-u-md-12">
+          <textarea class="am-validate" name="footer.content" id="editor" required>${footer.content!}</textarea>
+        </div>
+      </div>
+      <hr data-am-widget="divider" class="am-divider am-divider-dashed" />
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-12 am-u-md-12">
+          <button type="button" class="am-btn am-btn-primary" onclick="updateFooter();"><span class="am-icon-save">  保  存</span></button>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div>
+</div>
+<!-- content end -->
+<script>
+function updateFooter(){
+  $.ajax({
+    method:"post",  
+    url: '${base}/footer/update',
+    data: $(".validator-form").serialize(),
+    dataType: "json",
+    async: false,
+    success: function(data) {
+      Modal.alert(data.message);
+    }
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+  <!-- sidebar start -->
+  <a href="#" class="am-icon-btn am-icon-th-list am-show-sm-only shop-menu" data-am-offcanvas="{target: '#shop-offcanvas'}"></a>
+  <div class="shop-sidebar am-offcanvas" id="shop-offcanvas">
+    <div class="am-offcanvas-bar shop-offcanvas-bar">
+      <div class="am-panel am-panel-default shop-sidebar-panel">
+        <div class="am-panel-bd">
+          <p><span class="am-icon-bookmark"></span> 欢迎您！&nbsp;<strong>${loginMember.username!}</strong></p>
+          <p class="am-text-xs am-margin-0">会员等级:<span class="am-text-danger"> ${loginMember.memberRank.name!}</span><a class="am-badge am-badge-primary am-fr" href="${base}/memberCenter/logout">退出</a></p>
+        </div>
+      </div>
+      <ul class="am-list shop-sidebar-list am-text-xs">
+        <li><a href="${base}/memberCenter"><span class="am-icon-home am-icon-fw"></span> 会员中心首页</a></li>
+        <li class="shop-parent">
+          <a class="am-cf" data-am-collapse="{target: '#collapse-nav-1'}"><span class="am-icon-shopping-bag am-icon-fw"></span> 交易信息 <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+          <ul class="am-list am-collapse shop-sidebar-sub am-in" id="collapse-nav-1">
+            <li><a href="${base}/shop/order/list" class="am-cf"> 我的订单</a></li>
+          </ul>
+        </li>
+        <li class="shop-parent">
+          <a class="am-cf" data-am-collapse="{target: '#collapse-nav-2'}"><span class="am-icon-star am-icon-fw"></span> 我的收藏 <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+          <ul class="am-list am-collapse shop-sidebar-sub am-in" id="collapse-nav-2">
+            <li><a href="${base}/shop/favorite/list" class="am-cf"> 商品收藏</a></li>
+          </ul>
+        </li>
+        <li class="shop-parent">
+          <a class="am-cf" data-am-collapse="{target: '#collapse-nav-3'}"><span class="am-icon-comment am-icon-fw"></span> 我的消息 <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+          <ul class="am-list am-collapse shop-sidebar-sub am-in" id="collapse-nav-3">
+            <li><a href="${base}/shop/message/send" class="am-cf"> 发送消息</a></li>
+            <li><a href="${base}/shop/message/inbox" class="am-cf"> 收件箱</a></li>
+            <li><a href="${base}/shop/message/draftbox" class="am-cf"> 草稿箱</a></li>
+            <li><a href="${base}/shop/message/outbox" class="am-cf"> 发件箱</a></li>
+          </ul>
+        </li>
+        <li class="shop-parent">
+          <a class="am-cf" data-am-collapse="{target: '#collapse-nav-4'}"><span class="am-icon-info-circle am-icon-fw"></span> 个人资料 <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+          <ul class="am-list am-collapse shop-sidebar-sub am-in" id="collapse-nav-4">
+            <li><a href="${base}/profile/edit" class="am-cf"> 个人信息</a></li>
+            <li><a href="${base}/password/edit" class="am-cf"> 修改密码</a></li>
+            <li><a href="${base}/receiver/list" class="am-cf"> 收货地址</a></li>
+          </ul>
+        </li>
+        <li class="shop-parent">
+          <a class="am-cf" data-am-collapse="{target: '#collapse-nav-5'}"><span class="am-icon-money am-icon-fw"></span> 我的预存款 <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+          <ul class="am-list am-collapse shop-sidebar-sub am-in" id="collapse-nav-5">
+            <li><a href="${base}/deposit/list" class="am-cf"> 我的预存款</a></li>
+            <li><a href="${base}/deposit/recharge" class="am-cf"> 预存款充值</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- sidebar end -->

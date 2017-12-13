@@ -1,0 +1,58 @@
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <%if (systemConfig.metaKeywords! != ""){%><meta name="keywords" content="${systemConfig.metaKeywords}" /><%}%>
+  <%if (systemConfig.metaDescription! != ""){%><meta name="description" content="${systemConfig.metaDescription}" /><%}%>
+  <!-- minimum-scale=1.0, maximum-scale=1.0 不加这两个在iPhone浏览器下点击缩小了的输入框会使整个页面变大 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+  <title>${systemConfig.shopName!}</title>
+
+  <!-- Set render engine for 360 browser -->
+  <meta name="renderer" content="webkit">
+
+  <!-- No Baidu Siteapp-->
+  <meta http-equiv="Cache-Control" content="no-siteapp"/>
+
+  <link rel="icon" type="image/png" href="${base}/statics/img/favicon.png">
+
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" sizes="192x192" href="${base}/statics/img/app-icon72x72@2x.png">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="JFinal shop"/>
+  <link rel="apple-touch-icon-precomposed" href="${base}/statics/img/app-icon72x72@2x.png">
+
+  <!-- Tile icon for Win8 (144x144 + tile color) -->
+  <meta name="msapplication-TileImage" content="${base}/statics/img/app-icon72x72@2x.png">
+  <meta name="msapplication-TileColor" content="#0e90d2">
+
+  <link rel="stylesheet" href="${base}/statics/AmazeUI/assets/css/amazeui.min.css">
+  <link rel="stylesheet" href="${base}/statics/AmazeUI/assets/css/shop.css">
+  
+  <!--[if (gte IE 9)|!(IE)]><!-->
+  <script src="${base}/statics/AmazeUI/assets/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <script src="${base}/statics/AmazeUI/assets/js/amazeui.min.js"></script>
+  <script src="${base}/statics/AmazeUI/assets/js/amazeui.modal.js"></script>
+  <script src="${base}/statics/js/base.js"></script>
+  <script src="${base}/statics/AmazeUI/assets/js/validator.js"></script>
+  
+  <script src="${base}/statics/js/plugin/jquery.cookie.js"></script>
+  <%if (has(noFormJS) && noFormJS){%>
+  <!-- TODO:SUN.AO 此处form的导入和amazeui.min.js会有冲突,需要再执行注册脚本 -->
+  <%}else{%>
+  <script src="${base}/statics/js/plugin/jquery.form.js"></script>
+  <%}%>
+  <%if (has(lSelectJS) && lSelectJS){%>
+  <script src="${base}/statics/js/jquery.lSelect.js"></script>
+  <%}%>
+  <script src="${base}/statics/js/plugin/jquery.metadata.js"></script>
+  <%if (has(productJS) && productJS){%>
+  <script>
+  JFinalshop.base='${base!}';
+  </script>
+  <script src="${base}/statics/shop/js/product.js"></script>
+  <%}%>
+  

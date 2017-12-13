@@ -1,0 +1,298 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '查看订单'}){}%>
+</head>
+<body>
+<!-- content start -->
+<div class="admin-content">
+  <div class="admin-content-body">
+    <div class="am-cf app-padding-title">
+      <div class="am-fl am-cf">
+        <strong class="am-text-primary am-text-lg">订单管理</strong> / <small>查看订单</small>
+      </div>
+    </div>
+
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+    
+    <div class="am-tabs am-margin" data-am-tabs="{noSwipe: 1}">
+      <ul class="am-tabs-nav am-nav am-nav-tabs">
+        <li class="am-active"><a href="#tab1">订单信息</a></li>
+        <li><a href="#tab2">商品信息</a></li>
+        <li><a href="#tab3">收款记录</a></li>
+        <li><a href="#tab4">退款记录</a></li>
+        <li><a href="#tab5">收货记录</a></li>
+        <li><a href="#tab6">退货记录</a></li>
+        <li><a href="#tab7">订单日志</a></li>  
+      </ul>
+
+      <div class="am-tabs-bd">
+        <div class="am-tab-panel am-fade am-in am-active" id="tab1">
+          <div class="am-g am-u-sm-12">
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">订单编号</div>
+  		    <div class="am-u-sm-8 am-u-md-4"><p>${order.orderSn!}</p></div>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">下单时间</div>
+  		    <div class="am-u-sm-8 am-u-md-4"><p><small>${order.createDate,dateFormat="yyyy-MM-dd HH:mm:ss"}</small></p></div>
+            <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">商品重量</div>
+            <div class="am-u-sm-8 am-u-md-4"><p class="am-text-secondary">${order.productWeight}${i18n("WeightUnit." + order.productWeightUnit)}</p></div>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">商品总金额</div>
+  		    <div class="am-u-sm-8 am-u-md-4"><p class="am-text-danger">${order.productTotalPrice,orderUnitCurrencyFormat}</p></div>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">配送方式</div>
+  		    <div class="am-u-sm-8 am-u-md-4"><p>${order.deliveryTypeName}</p></div>
+            <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">配送费用</div>
+  		    <div class="am-u-sm-8 am-u-md-4"><p class="am-text-warning">${order.deliveryFee,orderUnitCurrencyFormat}</p></div>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">支付方式</div>
+  		    <div class="am-u-sm-8 am-u-md-4"><p>${order.paymentConfigName}</p></div>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">支付手续费</div>
+  		    <div class="am-u-sm-8 am-u-md-4"><p class="am-text-warning">${order.paymentFee,orderUnitCurrencyFormat}</p></div>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">订单总金额</div>
+            <div class="am-u-sm-8 am-u-md-10"><p class="am-text-danger">${order.totalAmount,orderUnitCurrencyFormat}&nbsp;&nbsp;<br class="am-show-sm-only" /><small class="am-text-success">[已付金额：${order.paidAmount,orderUnitCurrencyFormat}]</small></p></div>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">附言</div>
+            <div class="am-u-sm-8 am-u-md-10"><p>${order.memo!}</p></div>
+              
+  		    <hr data-am-widget="divider" class="am-divider am-divider-dotted" />
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">收货人姓名</div>
+  		    <div class="am-u-sm-8 am-u-md-4"><p>${order.shipName}</p></div>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">邮编</div>
+  		    <div class="am-u-sm-8 am-u-md-4"><p>${order.shipZipCode}</p></div>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">收货地区</div>
+  		    <div class="am-u-sm-8 am-u-md-10"><p>${order.shipArea}</p></div>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">收货地址</div>
+  		    <div class="am-u-sm-8 am-u-md-10"><p>${order.shipAddress}</p></div>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">电话</div>
+  		    <div class="am-u-sm-8 am-u-md-4"><p>${order.shipPhone}</p></div>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">手机</div>
+  		    <div class="am-u-sm-8 am-u-md-4"><p>${order.shipMobile}</p></div>
+  		          
+  		    <hr data-am-widget="divider" class="am-divider am-divider-dotted" />
+            <%if (!isEmpty(order.member_id)){%>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">用户名</div>
+  		    <div class="am-u-sm-8 am-u-md-4"><p>${order.member.username}</p></div>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">会员等级</div>
+  		    <div class="am-u-sm-8 am-u-md-4">
+              <p>${order.member.memberRank.name}<br class="am-show-sm-only" />
+                <%if (order.member.memberRank.preferentialScale != 100){%>
+                <small class="am-text-danger">[优惠百分比：${order.member.memberRank.preferentialScale}%]</small>
+  			    <%}%>
+              </p>
+  		    </div>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">E-mail</div>
+  		    <div class="am-u-sm-8 am-u-md-4"><p>${order.member.email}</p></div>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">最后登录IP</div>
+  		    <div class="am-u-sm-8 am-u-md-4"><p>${order.member.loginIp}</p></div>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">预存款余额</div>
+  		    <div class="am-u-sm-8 am-u-md-4"><p class="am-text-success">${order.member.deposit.balance!0,orderUnitCurrencyFormat}</p></div>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">积分</div>
+  		    <div class="am-u-sm-8 am-u-md-4"><p class="am-text-success">${order.member.point}</p></div>
+  		    <%}else{%>
+  		    <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">会员状态</div>
+  		    <div class="am-u-sm-8 am-u-md-10"><p>会员不存在</p></div>
+  		    <%}%>
+          </div>
+        </div>
+  
+        <div class="am-tab-panel am-fade" id="tab2">
+          <div class="am-g am-u-sm-12 am-padding-0 am-margin-0">
+            <div class="am-scrollable-horizontal">
+        	  <!-- 商品信息 -->
+  		      <table class="am-table am-table-striped am-table-hover table-main am-text-nowrap">
+      		    <thead>
+      		      <tr>
+      		        <th class="am-kai">货号</th>
+      			    <th class="am-kai">商品名称</th>
+      			    <th class="am-kai">价格</th>
+      				<th class="am-kai">购买数量</th>
+      		      </tr>
+      		    </thead>
+      		    <tbody>
+      		      <%for(list in order.orderItemList){%>
+      		      <tr>
+      		        <td><a href="${base}${list.productHtmlFilePath}" target="_blank">${list.productSn}</a></td>
+      		        <td><a href="${base}${list.productHtmlFilePath}" target="_blank"><div class="am-text-truncate app-text-truncate-product-name">${list.productName}</div></a></td>
+      		        <td class="am-text-danger">${list.productPrice,priceUnitCurrencyFormat}</td>
+      		        <td class="am-text-secondary am-text-center">${list.productQuantity}</td>
+      		      </tr>	
+      		      <%}%>				        
+      		    </tbody>
+      		  </table>
+            </div>
+          </div>
+        </div>
+  
+        <div class="am-tab-panel am-fade" id="tab3">
+          <div class="am-g am-u-sm-12 am-padding-0 am-margin-0">
+            <div class="am-scrollable-horizontal">
+            <!-- 收款记录 -->
+            <table class="am-table am-table-striped am-table-hover table-main am-text-nowrap">
+  		    <thead>
+  		      <tr>
+  			    <th class="am-kai">支付编号</th>
+  				<th class="am-kai">支付类型</th>
+  				<th class="am-kai">支付方式</th>
+  				<th class="am-kai">支付金额</th>
+  				<th class="am-kai">支付手续费</th>
+  				<th class="am-kai">付款人</th>
+  				<th class="am-kai">支付状态</th>
+  				<th class="am-kai">支付时间</th>
+  		      </tr>
+  		    </thead>
+  		    <tbody>
+  		      <%for(list in order.paymentList){%>
+  		      <tr>
+  		        <td><a href="${base}/payment/view?id=${list.id}">${list.paymentSn}</a></td>
+  		        <td>${i18n("PaymentType." + list.paymentType)}</td>
+  		        <td>${list.paymentConfigName}</td>
+  		        <td class="am-text-danger">${list.totalAmount,orderUnitCurrencyFormat}</td>
+  		        <td class="am-text-warning">${list.paymentFee,orderUnitCurrencyFormat}</td>
+  		        <td>${list.payer}</td>
+  		        <td class="am-text-success">${i18n("PaymentStatus." + list.paymentStatus)}</td>
+  		        <td>${list.createDate,dateFormat="yyyy-MM-dd HH:mm:ss"}</td>
+  		      </tr>	
+  		      <%}%>				        
+  		    </tbody>
+  		  </table>
+            </div>
+          </div>
+        </div>
+        
+        <div class="am-tab-panel am-fade" id="tab4">
+          <div class="am-g am-u-sm-12 am-padding-0 am-margin-0">
+            <div class="am-scrollable-horizontal">
+             <!-- 退款记录 -->
+            <table class="am-table am-table-striped am-table-hover table-main am-text-nowrap">
+  		    <thead>
+  		      <tr>
+  				<th class="am-kai">退款编号</th>
+  				<th class="am-kai">退款类型</th>
+  				<th class="am-kai">支付方式</th>
+  				<th class="am-kai">退款金额</th>
+  				<th class="am-kai">收款人</th>
+  				<th class="am-kai">退款时间</th>
+  		      </tr>
+  		    </thead>
+  		    <tbody>
+  		      <%for(list in order.refundList){%>
+  		      <tr>
+  		        <td><a href="${base}/refund/view?id=${list.id}">${list.refundSn}</a></td>
+  		        <td>${i18n("RefundType." + list.refundType)}</td>
+  		        <td>${list.paymentConfigName}</td>
+  		        <td class="am-text-danger">${list.totalAmount,orderUnitCurrencyFormat}</td>
+  		        <td>${list.payee}</td>
+  		        <td>${list.createDate,dateFormat="yyyy-MM-dd HH:mm:ss"}</td>
+  		      </tr>	
+  		      <%}%>				        
+  		    </tbody>
+  		  </table>
+            </div>
+          </div>
+        </div>
+        
+        <div class="am-tab-panel am-fade" id="tab5">
+          <div class="am-g am-u-sm-12 am-padding-0 am-margin-0">
+            <div class="am-scrollable-horizontal">
+            <!-- 收货记录 -->
+            <table class="am-table am-table-striped am-table-hover table-main am-text-nowrap">
+  		    <thead>
+  		      <tr>
+  				<th class="am-kai">发货编号</th>
+  				<th class="am-kai">配送方式名称</th>
+  				<th class="am-kai">物流公司名称</th>
+  				<th class="am-kai">物流编号</th>
+  				<th class="am-kai">物流费用</th>
+  				<th class="am-kai">收货人姓名</th>
+  				<th class="am-kai">收货地区</th>
+  				<th class="am-kai">发货时间</th>
+  		      </tr>
+  		    </thead>
+  		    <tbody>
+  		      <%for(list in order.shippingList){%>
+  		      <tr>
+  		        <td><a href="${base}/shipping/view?id=${list.id}">${list.shippingSn}</a></td>
+  		        <td>${list.deliveryTypeName}</td>
+  		        <td>${list.deliveryCorpName}</td>
+  		        <td>${list.deliverySn}</td>
+  		        <td class="am-text-danger">${list.deliveryFee,orderUnitCurrencyFormat}</td>
+  		        <td>${list.shipName}</td>
+  		        <td>${list.shipArea}</td>
+  		        <td>${list.createDate,dateFormat="yyyy-MM-dd HH:mm:ss"}</td>
+  		      </tr>	
+  		      <%}%>				        
+  		    </tbody>
+  		  </table>
+            </div>
+          </div>
+        </div>
+        
+        <div class="am-tab-panel am-fade" id="tab6">
+          <div class="am-g am-u-sm-12 am-padding-0 am-margin-0">
+            <div class="am-scrollable-horizontal">
+            <!-- 退货记录 -->
+            <table class="am-table am-table-striped am-table-hover table-main am-text-nowrap">
+  		    <thead>
+  		      <tr>
+  			    <th class="am-kai">退货编号</th>
+  				<th class="am-kai">配送方式名称</th>
+  				<th class="am-kai">物流公司名称</th>
+  				<th class="am-kai">物流编号</th>
+  				<th class="am-kai">物流费用</th>
+  				<th class="am-kai">退货人姓名</th>
+  				<th class="am-kai">退货地区</th>
+  				<th class="am-kai">退货时间</th>
+  		      </tr>
+  		    </thead>
+  		    <tbody>
+  		      <%for(list in order.reshipList){%>
+  		      <tr>
+  		        <td><a href="${base}/reship/view?id=${list.id}">${list.reshipSn}</a></td>
+  		        <td>${list.deliveryTypeName}</td>
+  		        <td>${list.deliveryCorpName}</td>
+  		        <td>${list.deliverySn}</td>
+  		        <td class="am-text-danger">${list.deliveryFee,orderUnitCurrencyFormat}</td>
+  		        <td>${list.shipName}</td>
+  		        <td>${list.shipArea}</td>
+  		        <td>${list.createDate,dateFormat="yyyy-MM-dd HH:mm:ss"}</td>
+  		      </tr>	
+  		      <%}%>				        
+  		    </tbody>
+  		  </table>
+            </div>
+          </div>
+        </div>
+        
+        <div class="am-tab-panel am-fade" id="tab7">
+          <div class="am-g am-u-sm-12 am-padding-0 am-margin-0">
+            <div class="am-scrollable-horizontal">
+            <!-- 订单日志 -->
+            <table class="am-table am-table-striped am-table-hover table-main am-text-nowrap">
+  		    <thead>
+  		      <tr>
+  				<th class="am-kai">日志类型</th>
+  				<th class="am-kai">操作员</th>
+  				<th class="am-kai">日志信息</th>
+  				<th class="am-kai">操作日间</th>
+  		      </tr>
+  		    </thead>
+  		    <tbody>
+  		      <%for(list in order.orderLogList){%>
+  		      <tr>
+  		        <td class="am-kai">${i18n("OrderLogType." + list.orderLogType)}</td>
+  		        <td class="am-kai">${list.operator}</td>
+  		        <td class="am-kai">${list.info}</td>
+  		        <td>${list.createDate,dateFormat="yyyy-MM-dd HH:mm:ss"}</td>
+  		      </tr>	
+  		      <%}%>				        
+  		    </tbody>
+  		  </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="am-margin">
+      <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+    </div>
+  </div>
+</div>
+<!-- content end -->
+</body>
+</html>

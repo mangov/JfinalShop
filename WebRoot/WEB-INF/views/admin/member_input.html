@@ -1,0 +1,190 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '添加/编辑会员', validatorJS: true, lSelectJS: true}){}%>
+<%var isAdd = false;
+  var isEdit = false;
+  if(isEmpty(member.id)){
+	isAdd = true;
+  }else{
+	isEdit = true;
+  }%>
+</head>
+<body>
+<!-- content start -->
+<div class="admin-content">
+  <div class="admin-content-body">
+    <div class="am-cf app-padding-title">
+      <div class="am-fl am-cf">
+        <strong class="am-text-primary am-text-lg">会员管理</strong> / <small><%if(isAdd){%>添加会员<%}else{%>编辑会员<%}%></small>
+      </div>
+    </div>
+  
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+    
+    <form class="validator-form" class="am-form" action="<%if(isAdd){%>${base}/admin/member/save<%}else{%>${base}/admin/member/update<%}%>" method="post">
+    <%if(isEdit){%><input type="hidden" name="member.id" value="${member.id!}" /><%}%>
+    <div class="am-form am-margin am-form-horizontal" >
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">用户名</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <%if (isAdd){%>
+          <input type="text" class="am-form-field js-pattern-username" name="member.username" value="${member.username!}" minlength="2" maxlength="20" required />
+          <%}else{%>
+          ${member.username}
+          <input type="hidden" name="member.username" value="${member.username!}" />
+          <%}%>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">密 码</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="password" id="doc-vld-pwd-1" class="am-form-field" name="member.password" placeholder="最少4位" maxlength="20" <%if(isAdd){%> minlength="4" required<%}%>/>
+          <%if (!isEmpty(member.id)){%>
+          <a class="am-badge am-badge-warning">如果要修改密码，请填写密码，若留空，密码将保持不变</a>
+          <%}%>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">重复密码</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="password" id="doc-vld-pwd-2" class="am-form-field" name="rePassword" placeholder="请与上面输入的一致" data-equal-to="#doc-vld-pwd-1"<%if(isAdd){%> required<%}%>/>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">E-mail</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="email" class="am-form-field" name="member.email" value="${member.email!}" required />
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">积分</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="number" class="am-form-field" name="member.point" value="${member.point!0}" min="0" placeholder="只允许输入零或正整数" required />
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">预存款</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="number" class="am-form-field" name="member.deposit" value="${member.deposit.balance!0}" min="0" placeholder="只允许输入大于或等于零的数" required />
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">会员等级</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <select name="member.memberRank_id" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}" required>
+            <%for(list in allMemberRank){%>	
+			<option value="${list.id}"<%if ((isAdd && list.isDefault) || (isEdit && member.memberRank_id == list.id)){%> selected<%}%>>${list.name}</option>
+			<%}%>
+          </select>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">是否启用</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <label class="am-radio-inline">
+            <input type="radio" name="member.isAccountEnabled" value="true"<%if (isAdd || member.isAccountEnabled == true){%> checked<%}%> required> 是
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="member.isAccountEnabled" value="false"<%if (member.isAccountEnabled! == false){%> checked<%}%>> 否
+          </label>
+        </div>
+      </div>
+      <%if(isEdit){%>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">注册时间</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          ${member.createDate,"yyyy-MM-dd HH:mm:ss"}
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">注册IP</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          ${member.registerIp!}
+        </div>
+      </div>
+      <%}%>
+      <hr data-am-widget="divider" class="am-divider am-divider-dotted" />
+	  <%for (list in enabledMemberAttributeList){%>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">${list.name}</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <%if (list.attributeType == "text"){%>
+          <input type="text" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+          <%}else if (list.attributeType == "number"){%>
+          <input type="number" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+          <%}else if (list.attributeType == "alphaint"){%>
+          <input type="text" class="am-form-field js-pattern-alphaint" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+          <%}else if (list.attributeType == "email"){%>
+          <input type="email" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+          <%}else if (list.attributeType == "select"){%>
+          <select name="${list.id}" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}"<%if (list.isRequired){%> required<%}%>>
+            <option value=""></option>
+            <%for(attributeOptionList in list.attributeOptionList){%>
+            <option value="${attributeOptionList}"<%if (member.memberAttributeMap[list.id]! == attributeOptionList){%> selected<%}%>>${attributeOptionList}</option>
+            <%}%>
+          </select>
+          <%}else if (list.attributeType == "checkbox"){%>
+          <%for(attributeOptionList in list.attributeOptionList){%>
+          <label class="am-checkbox-inline">
+            <input type="checkbox" name="${list.id}" value="${attributeOptionList}"<%if (strutil.contain(product.productAttributeMap[list.id],attributeOptionList)){%> checked<%}%><%if (list.isRequired && listLP.index==1){%> required<%}%>>${attributeOptionList}
+          </label>
+          <%}%>
+          <%}else if (list.attributeType == "name"){%>
+          <input type="text" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+          <%}else if (list.attributeType == "gender"){%>
+          <label class="am-radio-inline">
+            <input type="radio" name="${list.id}" value="male"<%if (member.memberAttributeMap[list.id]! == "male"){%> checked<%}%><%if (list.isRequired){%> required<%}%>> ${i18n("Gender.male")}
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="${list.id}" value="female"<%if (member.memberAttributeMap[list.id]! == "female"){%> checked<%}%>> ${i18n("Gender.female")}
+          </label>
+          <%}else if (list.attributeType == "date"){%>
+          <div class="am-form-group am-form-icon">
+            <i class="am-icon-calendar"></i>
+            <input type="date" class="am-form-field" name="${list.id}" value="${product.productAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+          </div>
+          <%}else if (list.attributeType == "area"){%>
+          <input type="hidden" name="${list.id}" class="areaSelect" value="${member.memberAttributeMap[list.id]!}" <%if (list.isRequired){%> required<%}%>>
+          <%}else if (list.attributeType == "address"){%>
+          <input type="text" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+          <%}else if (list.attributeType == "zipCode"){%>
+          <input type="text" class="am-form-field js-pattern-zipCode" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+          <%}else if (list.attributeType == "mobile"){%>
+          <input type="text" class="am-form-field js-pattern-mobile" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+          <%}else if (list.attributeType == "phone"){%>
+          <input type="text" class="am-form-field js-pattern-phone" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+          <%}else if (list.attributeType == "qq"){%>
+          <input type="number" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+          <%}else if (list.attributeType == "msn"){%>
+          <input type="text" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+          <%}else if (list.attributeType == "wangwang"){%>
+          <input type="text" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+          <%}else if (list.attributeType == "skype"){%>
+          <input type="text" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+          <%}%>
+        </div>
+      </div>
+	  <%}%>
+      <hr data-am-widget="divider" class="am-divider am-divider-dashed" />
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-8 am-u-sm-offset-4 am-u-md-9 am-u-md-offset-3">
+          <button type="submit" class="am-btn am-btn-primary"><span class="am-icon-save">  保  存</span></button>
+          <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div> 
+</div>
+<!-- content end -->
+<script type="text/javascript">
+$().ready( function() {
+  // 地区选择菜单
+  $(".areaSelect").lSelect({
+    url: "${base}/area/ajaxChildrenArea"// Json数据获取url
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+<% include("/common/shop_head.html"){}%>
+</head>
+<body>
+<%include("/shop/header.html"){}%>
+<div class="am-cf shop-main">
+  <!-- sidebar start -->
+  <%include("/shop/sidebar.html"){}%>
+  <!-- sidebar end -->
+
+  <!-- content start -->
+  <div class="shop-content">
+    <div class="shop-content-body">
+      <ol class="am-breadcrumb am-margin-left am-margin-bottom-0">
+        <li class="am-active"><span class="am-icon-home am-icon-fw"> </span>会员中心首页</li>
+      </ol>
+      
+      <div class="am-panel am-panel-default am-text-xs am-margin-horizontal-sm">
+        <div class="am-panel-hd">
+          您目前是[${loginMember.memberRank.name!}]
+          <%if (loginMember.memberRank.preferentialScale! != 100){%>
+          <span class="am-text-danger">[优惠百分比：${loginMember.memberRank.preferentialScale!}%]</span>
+          <%}%>
+        </div>
+        <div class="am-panel-bd am-g am-padding-0">
+          <table class="am-table am-table-bordered am-table-compact am-text-nowrap am-margin-0">
+            <tbody>
+            <tr>
+              <th>帐户总积分</th>
+              <td>${loginMember.point!}</td>
+              <th>订单总数量</th>
+              <td>&nbsp;&nbsp;<a class="am-badge am-badge-primary am-circle" href="${base}/shop/order/list">${loginMember.orderList.~size!0}</a></td>
+            </tr>
+            <tr>
+              <th>注册日期</th>
+              <td>${loginMember.createDate!,dateFormat="yyyy-MM-dd HH:mm:ss"}</td>
+              <th>未读消息数</th>
+              <td>&nbsp;&nbsp;<a class="am-badge am-badge-primary am-circle" href="${base}/shop/message/inbox">${unreadMessageCount!0}</a></td>
+            </tr>
+            <tr>
+              <th>预存款余额</th>
+              <td>${loginMember.deposit.balance!,orderUnitCurrencyFormat}</td>
+              <th>最后登录IP</th>
+              <td>${loginMember.loginIp!}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="am-panel am-panel-default am-text-xs am-margin-horizontal-sm">
+        <div class="am-panel-bd am-g am-padding-0 am-scrollable-horizontal">
+          <table class="am-table am-table-bordered am-table-striped am-table-hover am-text-nowrap am-text-xs am-margin-bottom-0">
+          <thead>
+            <tr>
+              <th>订单编号</th>
+              <th>下单时间</th>
+              <th>订单金额</th>
+              <th>订单状态</th>
+              <th>商品名称</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%for(list in loginMember.orderList!){%>
+		    <tr>
+			  <td>
+			    <a href="${base}/shop/order/view?id=${list.id}">${list.orderSn!}</a>
+			  </td>
+			  <td>
+				<span title="${list.createDate,dateFormat="yyyy-MM-dd HH:mm:ss"}">${list.createDate,dateFormat="yyyy-MM-dd HH:mm:ss"}</span>
+			  </td>
+			  <td>
+				${list.totalAmount!,orderUnitCurrencyFormat}
+             </td>
+			 <td>
+			   <%if (list.orderStatus != "processed" && list.orderStatus != "unprocessed"){%>
+               <span class="am-badge am-badge-primary">${i18n("OrderStatus." + list.orderStatus)}</span>
+			   <%}%>
+               <span class="am-badge am-badge-secondary">${i18n("PaymentStatus." + list.paymentStatus)}</span>
+               <span class="am-badge am-badge-success">${i18n("ShippingStatus." + list.shippingStatus)}</span>
+			  </td>
+              <td>
+                <a href="${base}/shop/order/view?id=${list.id}">
+                  <div class="am-text-truncate shop-text-truncate-order-product-name"  data-am-popover="{theme: 'secondary sm', content: '<%for(listProduct in list.orderItemList!){%><%if(listProductLP.index != 1){%><br><%}%>${listProduct.productName}<%}%>', trigger: 'hover focus'}">
+                  <%for(listItem in list.orderItemList!){%>
+                  <%if(listItemLP.index != 1){%>、<%}%>
+                  ${listItem.productName}
+                  <%}%>
+                  </div>
+                </a>
+              </td>
+			</tr>
+			<%if (listLP.index > 10){%>
+			<%break;%>
+			<%}%>
+			<%}%>
+          </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="am-text-xs am-text-right am-margin-bottom am-margin-right">
+         <a href="${base}/shop/order/list">更多订单>></a>
+      </div>
+    </div>
+    <%include("/shop/footer.html"){}%>
+  </div>
+  <!-- content end -->
+</div>
+</body>
+</html>

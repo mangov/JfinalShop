@@ -1,0 +1,123 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '添加/编辑管理员', validatorJS: true}){}%>
+<%var isAdd = false;
+  var isEdit = false;
+  if(isEmpty(admin.id)){
+	isAdd = true;
+  }else{
+	isEdit = true;
+  }%>
+</head>
+<body>
+<!-- content start -->
+<div class="admin-content">
+  <div class="admin-content-body">
+    <div class="am-cf app-padding-title">
+      <div class="am-fl am-cf">
+        <strong class="am-text-primary am-text-lg">系统管理</strong> / <small><%if(isAdd){%>添加管理员<%}else{%>编辑管理员<%}%></small>
+      </div>
+    </div>
+    
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+    
+    <form class="validator-form" action="<%if (isAdd){%>${base}/admin/save<%}else{%>${base}/admin/update<%}%>" method="post">
+    <input type="hidden" name="admin.id" value="${admin.id!}" />
+    <div class="am-tabs am-margin" data-am-tabs="{noSwipe: 1}">
+      <ul class="am-tabs-nav am-nav am-nav-tabs">
+        <li class="am-active"><a href="#tab1">基本信息</a></li>
+        <li><a href="#tab2">个人资料</a></li>
+      </ul>
+
+      <div class="am-tabs-bd am-form">
+        <div class="am-tab-panel am-fade am-in am-active am-form-horizontal" id="tab1">
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">用户名</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <%if (isAdd){%>
+              <input type="text" class="am-form-field js-pattern-username" name="admin.username" value="${admin.username!}" placeholder="中文、英文、数字和下划线" minlength="2" maxlength="20" required />
+              <div class="am-text-warning am-margin-top-xs am-text-xs">${usernameMessages!}</div>
+              <%}else{%>
+              ${admin.username!}
+              <input type="hidden" name="admin.username" value="${admin.username!}" />
+              <%}%>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">密 码</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="password" id="doc-vld-pwd-1" class="am-form-field" name="admin.password" placeholder="最少4位" maxlength="20"<%if(isAdd){%> minlength="4" required<%}%>/>
+              <div class="am-text-warning am-margin-top-xs am-text-xs">${passwordMessages!}</div>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">重复密码</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="password" id="doc-vld-pwd-2" class="am-form-field" name="rePassword" placeholder="请与上面输入的一致" data-equal-to="#doc-vld-pwd-1"<%if(isAdd){%> required<%}%>/>
+              <div class="am-text-warning am-margin-top-xs am-text-xs">${rePassword!}</div>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">E-mail</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="email" class="am-form-field" name="admin.email" value="${admin.email!}" required />
+              <div class="am-text-warning am-margin-top-xs am-text-xs">${emailMessages!}</div>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">管理角色</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <%for(list in allRole!){%>
+			  <label class="am-checkbox-inline">
+                <input type="checkbox" name="roleList.id" class="am-input-sm" value="${list.id!}"
+			    <% if(isEdit){
+				  var roleList = admin.roleList;
+				  for(var i = 0; i < roleList.~size; i++){
+				    if (strutil.contain(roleList[i].value,list.value)){%> checked="checked"
+                <%}}}%>/>
+				${list.name!}
+			  </label>
+			  <%}%>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">是否启用</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <label class="am-radio-inline">
+                <input type="radio" name="admin.isAccountEnabled" value="true"<%if (isAdd || admin.isAccountEnabled == true){%> checked<%}%> required> 是
+              </label>
+              <label class="am-radio-inline">
+                <input type="radio" name="admin.isAccountEnabled" value="false"<%if (admin.isAccountEnabled! == false){%> checked<%}%>> 否
+              </label>
+              <div class="am-text-warning am-margin-top-xs am-text-xs">${isAccountEnabledMessages!}</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="am-tab-panel am-fade am-form-horizontal" id="tab2">
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">部门</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="text" class="am-form-field" name="admin.department" value="${admin.department!}">
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">姓名</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="text" class="am-form-field" name="admin.name" value="${admin.name!}">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="am-margin">
+      <button type="submit" class="am-btn am-btn-primary"><span class="am-icon-save">  保  存</span></button>
+      <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+    </div>
+    </form>
+  </div>
+</div>
+<!-- content end -->
+</body>
+</html>

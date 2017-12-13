@@ -1,0 +1,41 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '提示信息'}){}%>
+</head>
+<body>
+   <div class="admin-content">
+    <div class="admin-content-body">
+      <div class="am-cf app-padding-title">
+        <div class="am-fl am-cf">
+          <strong class="am-text-primary am-text-lg">系统消息</strong> / <small>提示信息</small>
+        </div>
+      </div>
+      
+      <hr data-am-widget="divider" class="am-divider am-divider-dotted am-margin-0" />
+
+      <div class="am-g">
+        <div class="am-u-sm-12">
+          <h2 class="am-text-center am-text-lg am-margin-top-lg">${message}</h2>
+        <pre class="page-404">
+          .----.
+       _.'__    `.
+   .--($)($$)---/#\
+ .' @          /###\
+ :         ,   #####
+  `-..__.-' _.-\###/
+        `;_:    `"'
+      .'"""""`.
+     /,      ,\\
+    //         \\
+    `-._______.-'
+    ___`. | .'___
+   (______|______)
+        </pre>
+        <p class="am-text-center"><button type="button" class="am-btn am-btn-primary am-btn-xs" <%if (!isEmpty(redirectionUrl)){%>onclick="window.location.href='${base}${redirectionUrl}'"<%}else{%>onclick="window.history.back(); return false;"<%}%>>确  定</button></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

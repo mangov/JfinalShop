@@ -1,0 +1,21 @@
+      <div class="am-margin-horizontal">
+        <div class="am-slider am-slider-default am-slider-carousel" data-am-flexslider="{controlNav: false, smoothHeight: true, itemWidth: 100, itemMargin: 25, slideshow: false}">
+          <ul class="am-slides">
+            <%for(list in pictureFriendLinkList!){%>
+            <li>
+              <a href="${list.url}" target="_blank" title="${list.name}">
+                <img src="${base}${list.logo}">
+              </a>
+            </li>
+            <%}%>
+          </ul>
+        </div> 
+      </div>
+      <hr class="am-margin-bottom-xs">
+      <ul class="am-avg-sm-2 am-avg-md-4 am-avg-lg-5 am-thumbnails am-text-xs">
+        <%for(list in bottomNavigationList){%>
+        <li class="am-text-center am-padding-0">
+          <a href=${base}${list.url} <%if (list.isBlankTarget == true){%> target="_blank"<%}%>>${list.name}</a>
+        </li>
+        <%}%>
+      </ul>

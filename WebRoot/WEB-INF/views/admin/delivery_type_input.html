@@ -1,0 +1,127 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '添加/编辑配送方式', validatorJS: true}){}%>
+<%var isAdd = false;
+  var isEdit = false;
+  if(isEmpty(deliveryType.id)){
+	isAdd = true;
+  }else{
+	isEdit = true;
+  }%>
+</head>
+<body>
+<!-- content start -->
+<div class="admin-content">
+  <div class="admin-content-body">
+    <div class="am-cf app-padding-title">
+      <div class="am-fl am-cf">
+        <strong class="am-text-primary am-text-lg">网站设置</strong> / <small><%if(isAdd){%>添加配送方式<%}else{%>编辑配送方式<%}%></small>
+      </div>
+    </div>
+  
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+    
+    <form class="validator-form" class="am-form" action="<%if (isAdd){%>${base}/deliveryType/save<%}else{%>${base}/deliveryType/update<%}%>" method="post">
+    <input type="hidden" name="deliveryType.id" value="${deliveryType.id!}" />
+    <div class="am-form am-margin am-form-horizontal" >
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">配送方式名称</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="text" class="am-form-field" name="deliveryType.name" value="${deliveryType.name!}" required />
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">配送类型</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <select name="deliveryMethod" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}" required>
+            <option value=""></option>
+            <%for(list in allDeliveryMethod){%>
+			<option value="${list}"<%if (list == deliveryType.deliveryMethod!){%> selected <%}%>>
+			  ${i18n("DeliveryMethod." + list)}
+			</option>
+			<%}%>
+          </select>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">默认物流公司</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <select name="deliveryType.defaultDeliveryCorp_id" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}">
+            <option value=""></option>
+            <%for(list in allDeliveryCorp){%>
+			<option value="${list.id}" <%if (list.id == deliveryType.defaultDeliveryCorp_id!){%>selected <%}%>>
+			  ${list.name}
+			</option>
+			<%}%>
+          </select>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">首重量</label>
+        <div class="am-u-sm-5 am-u-md-7">
+          <input type="number" class="am-form-field" name="deliveryType.firstWeight" value="${deliveryType.firstWeight!0}" min="0" required />
+        </div>
+        <div class="am-u-sm-3 am-u-md-2">
+          <select name="firstWeightUnit" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}" required>
+            <%for(list in allWeightUnit){%>
+            <option value="${list}"<%if (list == product.weightUnit!){%> selected <%}%>>
+              ${i18n("WeightUnit."+list)}
+            </option>
+            <%}%>
+          </select>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">续重量</label>
+        <div class="am-u-sm-5 am-u-md-7">
+          <input type="number" class="am-form-field" name="deliveryType.continueWeight" value="${deliveryType.continueWeight!0}" min="0" required />
+        </div>
+        <div class="am-u-sm-3 am-u-md-2">
+          <select name="continueWeightUnit" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}" required>
+            <%for(list in allWeightUnit){%>
+            <option value="${list}"<%if (list == product.weightUnit!){%> selected <%}%>>
+              ${i18n("WeightUnit."+list)}
+            </option>
+            <%}%>
+          </select>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">首重价格</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="number" class="am-form-field" name="deliveryType.firstWeightPrice" value="${deliveryType.firstWeightPrice!0}" min="0" required />
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">续重价格</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="number" class="am-form-field" name="deliveryType.continueWeightPrice" value="${deliveryType.continueWeightPrice!0}" min="0" required />
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">排序</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="number" class="am-form-field" name="deliveryType.orderList" value="${deliveryType.orderList!50}" placeholder="只允许输入零或正整数" min="0" max="1000" required />
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">介绍</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <textarea rows="10" class="am-form-field" name="deliveryType.description">${deliveryType.description!}</textarea>
+        </div>
+      </div>
+      <hr data-am-widget="divider" class="am-divider am-divider-dashed" />
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-8 am-u-sm-offset-4 am-u-md-9 am-u-md-offset-3">
+          <button type="submit" class="am-btn am-btn-primary"><span class="am-icon-save">  保  存</span></button>
+          <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div> 
+</div>
+<!-- content end -->
+</body>
+</html>

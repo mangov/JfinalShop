@@ -1,0 +1,84 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '会员等级', loadListJS: true}){}%>
+</head>
+<body>
+  <div class="admin-content">
+    <div class="admin-content-body">
+      <div class="am-cf app-padding-title">
+        <div class="am-fl am-cf">
+          <strong class="am-text-primary am-text-lg">会员管理</strong> / <small>会员等级</small>
+        </div>
+      </div>
+      
+      <hr data-am-widget="divider" class="am-divider am-divider-dotted am-margin-0" />
+	  
+      <form id="listForm" action="${base}/memberRank/list" method="post">
+      <div class="am-g app-padding-toolbar">
+        <div class="am-u-sm-12 am-u-md-12">
+          <div class="am-btn-toolbar app-padding-toolbar-item">
+            <div class="am-btn-group am-btn-group-sm">
+              <button type="button" class="am-btn am-btn-default" onclick="location.href='${base}/memberRank/add';"><span class="am-icon-plus"></span> 新增</button>
+              <button type="button" class="am-btn am-btn-default" onclick="deleteAll('${base}/memberRank/delete');" id="deleteButton" disabled="disabled"><span class="am-icon-trash-o"></span> 删除</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+      
+      <div class="am-scrollable-horizontal">
+        <table class="am-table am-table-striped am-table-hover table-main am-text-nowrap am-margin-bottom-0">
+          <thead>
+            <tr>
+              <th><input type="checkbox" id="allCheck"></th>
+              <th>序号</th>
+              <th>操作</th>
+              <th>等級名称</th>
+              <th>优惠百分比</th>
+              <th>所需积分</th>
+              <th>是否默认</th>
+			</tr>
+          </thead>
+          <tbody>
+            <%for(list in pager.list){%>
+            <tr>
+              <td><input type="checkbox" name="ids" value="${list.id}"></td>   
+              <td>${listLP.index}</td>
+              <td>
+                <div class="am-btn-group am-btn-group-xs">
+                  <button type="button" class="am-btn am-btn-default am-btn-xs am-text-secondary app-table-button-padding" onclick="location.href='${base}/memberRank/edit?id=${list.id}'">
+                    <span class="am-icon-pencil"> 编辑</span>
+                  </button>
+                </div>
+              </td>
+			  <td>${list.name}</td>
+			  <td>${list.preferentialScale}%</td>
+			  <td>${list.point}</td>
+			  <td>
+				 <%if(list.isDefault){%>
+                 <i class="am-icon-check"></i>
+				 <%}else{%>
+                 <i class="am-icon-close"></i>
+				 <%}%>
+			  </td>
+            </tr>
+		    <%}%>
+          </tbody>
+        </table>
+      </div>
+      <!-- 分页 -->
+      <%if (pager.list.~size > 0){%>
+      <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />    
+      <div class="am-margin-left am-text-xs"><% include("/admin/pager.html"){}%></div>
+      <%}else{%>
+      <h3 class="am-kai am-text-center am-margin-xs">没有找到任何记录!</h3>
+      <%}%>
+      </form>  
+    </div>
+  </div>
+<!-- content end -->
+</body>
+</html>
+			

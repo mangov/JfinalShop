@@ -1,0 +1,79 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head><% include("/common/admin_head.html",{title: 'JFinal shop管理', validatorJS: true}){}%>
+</head>
+<body>
+  <div class="header">
+    <div class="am-g am-text-center am-margin-top">
+      <h1>JFinal shop管理</h1>
+    </div>
+    <hr class="am-margin-top-0" />
+  </div>
+  <div class="am-g">
+    <div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+      <form class="validator-form am-form am-form-horizontal" action="${base}/admin/singIn" method="post">
+        <div class="am-form-group">
+          <label for="username" class="am-u-sm-3 am-form-label">用户名</label>
+          <div class="am-u-sm-9">
+            <input type="text" name="username" id="username" placeholder="用户名/邮箱" data-validation-message="请输入正确的用户名" minlength="2" maxlength="20" pattern="^([0-9a-z_A-Z\u4e00-\u9fa5]+)$" required />
+          </div>
+        </div>
+
+        <div class="am-form-group">
+          <label for="passward" class="am-u-sm-3 am-form-label">密码</label>
+          <div class="am-u-sm-9">
+            <input type="password" name="password" id="passward" placeholder="密码" data-validation-message="请输入正确的密码" required />
+          </div>
+        </div>
+
+        <div class="am-form-group">
+          <label for="captcha" class="am-u-sm-3 am-form-label">验证码</label>
+          <div class="am-u-sm-5">
+            <input type="text" name="captchaToken" id="captcha" placeholder="验证码 →" data-validation-message="请输入验证码" required />
+          </div>
+          <div class="am-u-sm-4 am-padding-left-0">
+            <img id="captchaImage" src="${base}/captcha?width=100&height=35&fontsize=30" alt="换一张" />
+          </div>
+        </div>
+
+        <div class="am-form-group">
+          <div class="am-u-sm-7 am-u-md-offset-3 am-u-md-5">
+            <input name="remember" type="checkbox" /> 保持登录状态
+          </div>
+          <div class="am-u-sm-5 am-u-md-4 am-text-right">
+            <a class="am-badge am-badge-warning" href="forgotpassword.html">忘记密码 ^_^? </a>
+          </div>
+        </div>
+
+        <div class="am-form-group">
+          <div class="am-u-sm-12 am-u-md-9 am-u-md-offset-3">
+            <button type="submit" class="am-btn am-btn-primary am-btn-block">登 录</button>
+          </div>
+        </div>
+      </form>
+      <p>
+        JFinal shop &copy; 2016 | <a href="http://sun-ao.github.io" target="_blank">sun.ao</a>. Licensed under MIT license.
+      </p>
+    </div>
+  </div>
+  <script>
+      $(function() {
+        if (self.location != top.location) {
+          top.location.href = '${base}/admin/login';
+        }
+
+        var $captcha = $("#captcha");
+        var $captchaImage = $("#captchaImage");
+        $captchaImage.click(function() {
+          var timestamp = (new Date()).valueOf();
+          var imageSrc = $captchaImage.attr("src");
+          if (imageSrc.indexOf("?") >= 0) {
+            imageSrc = imageSrc.substring(0, imageSrc.indexOf("?"));
+          }
+          imageSrc = imageSrc + "?timestamp=" + timestamp + "&width=100&height=35&fontsize=30";
+          $captchaImage.attr("src", imageSrc);
+        });
+      });
+    </script>
+</body>
+</html>

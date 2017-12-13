@@ -1,0 +1,57 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+<% include("/common/shop_head.html"){}%>
+</head>
+<body>
+<%include("/shop/header.html"){}%>
+<div class="am-cf shop-main">
+  <!-- sidebar start -->
+  <%include("/shop/sidebar.html"){}%>
+  <!-- sidebar end -->
+
+  <!-- content start -->
+  <div class="shop-content">
+    <div class="shop-content-body">
+      <ol class="am-breadcrumb am-margin-left am-margin-bottom-0">
+        <li><span class="am-icon-money am-icon-fw"> </span>我的预存款</li>
+        <li class="am-active">预存款充值</li>
+      </ol>
+      <form id="depositRechargeForm" action="${base}/shop/payment/confirm" method="post" data-am-validator>
+	  <input type="hidden" name="paymentType" value="recharge" />
+      <div class="am-panel am-panel-default am-margin-horizontal-sm am-padding-top">
+        <div class="am-panel-bd am-g am-padding-0 am-form am-form-horizontal">
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-3 am-form-label">充值金额</label>
+            <div class="am-u-sm-8 am-u-end">
+              <input type="number" class="am-form-field" name="amountPayable" value="" min="1" placeholder="请填写充值金额！"  required>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-3 am-form-label">支付方式</label>
+            <div class="am-u-sm-8 am-u-end">
+              <%for(list in nonDepositOfflinePaymentConfigList){%>
+              <label class="am-radio-inline">
+                <input type="radio" name="paymentConfig.id" value="${list.id}" required> 
+                <span data-am-popover="{theme: 'secondary sm', 
+                    content: '<%if (list.paymentFeeType == "scale" && list.paymentFee != 0){%>[支付手续费费率：${list.paymentFee}%]<%}else if (list.paymentFeeType == "fixed" && list.paymentFee != 0){%>[支付手续费：${list.paymentFee,orderUnitCurrencyFormat}]<%}%><p>${list.description}</p>', trigger: 'hover focus'}">${list.name}</span>
+              </label>
+              <%}%>
+            </div>
+          </div>
+          <hr data-am-widget="divider" class="am-divider am-divider-dashed" />
+          <div class="am-form-group am-form-group-sm">
+            <div class="am-u-sm-8 am-u-sm-offset-3">
+              <button type="submit" class="am-btn am-btn-primary"><span class="am-icon-money"> 立刻充值</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </form>
+    </div>
+    <%include("/shop/footer.html"){}%>
+  </div>
+  <!-- content end -->
+</div>
+</body>
+</html>

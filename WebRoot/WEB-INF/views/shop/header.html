@@ -1,0 +1,365 @@
+<script>
+$(function() {
+  
+  // 刷新header登录、注册信息
+  $.flushHeaderInfo = function () {
+    var $headerShowLoginWindow = $("#headerShowLoginWindow");
+	var $headerShowRegisterWindow = $("#headerShowRegisterWindow");
+	var $headerLoginMemberUsername = $("#headerLoginMemberUsername");
+	var $headerMemberCenter = $("#headerMemberCenter");
+	var $headerLogout = $("#headerLogout");
+	if($.cookie("loginMemberUsername") != null) {
+	  $headerLoginMemberUsername.text($.cookie("loginMemberUsername"));
+	  $headerMemberCenter.show();
+	  $headerLogout.show();
+	  $headerShowLoginWindow.hide();
+	  $headerShowRegisterWindow.hide();
+	} else {
+	  $headerLoginMemberUsername.text("");
+	  $headerShowLoginWindow.show();
+	  $headerShowRegisterWindow.show();
+	  $headerMemberCenter.hide();
+	  $headerLogout.hide();
+	}
+  }
+	
+  $.flushHeaderInfo();
+  
+  //获取注册信息
+  $.getAgreement = function () {
+    if ($.trim($("#agreementContent").html()) == "") {
+      $.ajax({
+  	    beforeSend: function(data) {
+  	      $("#agreementContent").html('加载中...');
+  	    },
+  	    dataType: "text",
+  	    url: "${base}/shop/member/agreement",
+  	    success: function(data){
+  		  $("#agreementContent").html(data);
+  	    }
+  	  });
+    }
+  }
+  
+  $.getAgreement();
+  
+  // 刷新验证码图片(登录)
+  function loginWindowCaptchaImageRefresh() {
+    $("#loginWindowCaptchaImage").attr("src", "${base}/captcha?timestamp=" + (new Date()).valueOf() + "&width=85&height=33&fontsize=27");
+  }
+	
+  // 点击刷新验证码图片
+  $("#loginWindowCaptchaImage").click( function() {
+    loginWindowCaptchaImageRefresh();
+  });
+  
+  //登录
+  $("#headerShowLoginWindow").click( function() {
+    loginWindowCaptchaImageRefresh();
+    $("#member-login-modal").modal();
+  });
+  
+  // 刷新验证码图片(注册)
+  function registerWindowCaptchaImageRefresh() {
+    $("#registerWindowCaptchaImage").attr("src", "${base}/captcha?timestamp=" + (new Date()).valueOf() + "&width=85&height=33&fontsize=27");
+  }
+	
+  // 点击刷新验证码图片
+  $("#registerWindowCaptchaImage").click( function() {
+	registerWindowCaptchaImageRefresh();
+  });
+  
+  //注册
+  $("#headerShowRegisterWindow").click( function() {
+	  registerWindowCaptchaImageRefresh();
+      $("#member-register-modal").modal();
+  });
+  
+  // 登录表单提交
+  $('#loginWindowForm').on('submit', function() {
+	$("#loginWindowFormBtn").button('loading');
+    $(this).ajaxSubmit({
+      success: function(data) {
+        if (data.status == "success") {
+		  Modal.alert(data.message);
+		  $.flushHeaderInfo();
+		  $(this).resetForm();
+		  $("#member-login-modal").modal('close');
+		  var redirectionUrl = $.cookie("redirectionUrl");
+		  if(redirectionUrl != null && redirectionUrl != "") {
+			location.href = redirectionUrl;
+		  }
+		} else if (data.status == "error") {
+		  loginWindowCaptchaImageRefresh();
+		  $("#loginWindowCaptcha").val("");
+		  Modal.alert(data.message);
+		} else {
+		  Modal.alert(data);
+		}
+        $("#loginWindowFormBtn").button('reset');
+      }
+    });
+    return false; // 阻止表单自动提交事件
+  });
+  
+  //注册表单提交
+  $('#registerWindowForm').on('submit', function() {
+	$("#registerWindowSubmitBtn").button('loading');
+    $(this).ajaxSubmit({
+      success: function(data) {
+        if (data.status == "success") {
+		  Modal.alert(data.message);
+		  $.flushHeaderInfo();
+		  $(this).resetForm();
+		  $("#member-register-modal").modal('close');
+		  var redirectionUrl = $.cookie("redirectionUrl");
+		  if(redirectionUrl != null && redirectionUrl != "") {
+			location.href = redirectionUrl;
+		  }
+		} else if (data.status == "error") {
+		  loginWindowCaptchaImageRefresh();
+		  $("#loginWindowCaptcha").val("");
+		  Modal.alert(data.message);
+		} else {
+		  Modal.alert(data);
+		}
+        $("#registerWindowSubmitBtn").button('reset');
+      }
+    });
+    return false; // 阻止表单自动提交事件
+  });
+ 
+});
+</script>
+<!-- 会员登录 start -->
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="member-login-modal">
+  <div class="am-modal-dialog am-panel am-panel-default">
+    <div class="am-modal-hd am-panel-hd">
+      会员登录<a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+    </div>
+    <div class="am-modal-bd am-panel-bd am-padding-0">
+      <form id="loginWindowForm" class="am-form am-form-horizontal am-margin-top" action="${base}/shop/member/ajaxLogin" method="post">
+      <div class="am-form-group">
+        <div class="am-u-sm-12 am-input-group am-input-group-sm">
+          <span class="am-input-group-label"><i class="am-icon-user am-icon-fw"></i></span>
+          <input type="text" class="am-form-field" id="loginUsername" name="member.username" placeholder="用户名" required>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-12 am-input-group am-input-group-sm">
+          <span class="am-input-group-label"><i class="am-icon-lock am-icon-fw"></i></span>
+          <input type="password" class="am-form-field" id="loginPassword" name="member.password" placeholder="密码" required>
+        </div>
+      </div>
+      <div class="am-form-group am-margin-bottom-xs">
+        <div class="am-u-sm-7 am-input-group am-input-group-sm">
+          <span class="am-input-group-label"><i class="am-icon-barcode am-icon-fw"></i></span>
+          <input type="text" class="am-form-field" id="loginCaptcha" name="captchaToken" placeholder="验证码" required>
+        </div>
+        <div class="am-u-sm-5 am-padding-left-0">
+          <img id="loginWindowCaptchaImage" class="am-fl" src="${base}/captcha?width=85&height=33&fontsize=27" alt="换一张" />
+        </div>
+      </div>
+      <div class="am-form-group am-margin-bottom-xs">
+        <div class="am-u-sm-12 am-u-md-12 am-text-right">
+          <a class="am-badge am-badge-warning" href="${base}/shop/member/passwordRecover">忘记密码 ^_^? </a>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-12 am-input-group am-input-group-sm">
+          <button id="loginWindowFormBtn" type="submit" class="am-btn am-btn-primary am-btn-block" data-am-loading="{loadingText: '努力登录中...'}">登录</button>
+        </div>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- 会员登录 end -->
+<!-- 会员注册 start -->
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="member-register-modal">
+  <div class="am-modal-dialog am-panel am-panel-default">
+    <div class="am-modal-hd am-panel-hd">
+      会员注册<a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+    </div>
+    <div class="am-modal-bd am-panel-bd am-padding-0">
+      <form id="registerWindowForm" class="am-form am-form-horizontal am-margin-top" action="${base}/shop/member/ajaxRegister" method="post">
+      <div class="am-form-group">
+        <div class="am-u-sm-12 am-input-group am-input-group-sm">
+          <span class="am-input-group-label"><i class="am-icon-user am-icon-fw"></i></span>
+          <input type="text" class="am-form-field" id="loginUsername" name="member.username" placeholder="用户名：中文、英文、数字和下划线" required>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-12 am-input-group am-input-group-sm">
+          <span class="am-input-group-label"><i class="am-icon-lock am-icon-fw"></i></span>
+          <input type="password" class="am-form-field" id="registerWindowPassword" name="member.password" placeholder="密码：密码长度不能小于4" required>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-12 am-input-group am-input-group-sm">
+          <span class="am-input-group-label"><i class="am-icon-lock am-icon-fw"></i></span>
+          <input type="password" class="am-form-field" name="rePassword" placeholder="重复密码" data-equal-to="#registerWindowPassword" required>
+        </div>
+      </div>
+      <div class="am-form-group">
+        <div class="am-u-sm-12 am-input-group am-input-group-sm">
+          <span class="am-input-group-label"><i class="am-icon-envelope-square am-icon-fw"></i></span>
+          <input type="email" class="am-form-field" name="member.email" placeholder="E-mail" required>
+        </div>
+      </div>
+      <div class="am-form-group am-margin-bottom-xs">
+        <div class="am-u-sm-7 am-input-group am-input-group-sm">
+          <span class="am-input-group-label"><i class="am-icon-barcode am-icon-fw"></i></span>
+          <input type="text" class="am-form-field" name="captchaToken" placeholder="验证码" required>
+        </div>
+        <div class="am-u-sm-5 am-padding-left-0">
+          <img id="registerWindowCaptchaImage" class="am-fl" src="${base}/captcha?width=85&height=33&fontsize=27" alt="换一张" />
+        </div>
+      </div>
+      <div class="am-form-group am-margin-bottom-xs">
+        <div class="am-u-sm-12 am-u-md-12">
+          <input type="checkbox" id="isAgreeAgreement" name="isAgreeAgreement" value="true" checked required />&nbsp;&nbsp;<a href="javascript:void(0);" class="am-badge am-badge-secondary" data-am-modal="{target: '#my-popup'}">已阅读并同意《注册协议》</a>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-12 am-input-group am-input-group-sm">
+          <button id="registerWindowSubmitBtn" type="submit" class="am-btn am-btn-primary am-btn-block" data-am-loading="{loadingText: '努力注册中...'}">注册</button>
+        </div>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- 会员注册 end -->
+<!-- 注册协议 start -->
+<div class="am-popup" id="my-popup">
+  <div class="am-popup-inner">
+    <div class="am-popup-hd">
+      <h4 class="am-popup-title">注册协议</h4>
+      <span data-am-modal-close
+            class="am-close">&times;</span>
+    </div>
+    <div class="am-popup-bd" id="agreementContent">
+    </div>
+  </div>
+</div>
+<!-- 注册协议 end -->
+<!-- 顶部操作栏和logo、搜索 start -->
+<div class="shop-header">
+<div class="am-panel am-panel-default am-margin-bottom-0">
+  <div class="am-panel-hd am-kai am-text-xs am-padding-vertical-0 am-padding-horizontal-xl am-cf">
+    <div class="am-fl">
+      <span class="am-fl">您好&nbsp;</span><span id="headerLoginMemberUsername" class="am-text-warning am-fl"></span><span class="am-hide-sm-only am-fl">,欢迎来到${systemConfig.shopName!}!</span>
+  	<a href="javascript:void(0);" id="headerShowLoginWindow">[登  录]</a>
+  	<a href="${base}/memberCenter" id="headerMemberCenter">[会员中心]</a>
+  	<a href="javascript:void(0);" id="headerShowRegisterWindow">[注  册]</a>
+  	<a href="${base}/memberCenter/logout" id="headerLogout">[退  出]</a>
+    </div>
+    <div class="am-fr am-hide-sm-only">
+      <%for(list in topNavigationList!){%>          
+      <a href="${base}${list.url}" <%if (list.isBlankTarget == true){%> target="_blank"<%}%>>${list.name!}</a>
+      <%if (!listLP.last){%>|<%}%>
+      <%}%>
+    </div>   
+  </div>
+  <div class="am-panel-bd am-padding-0">
+    <div class="am-g">
+      <div class="am-hide-sm-only am-u-md-4 am-u-lg-4 am-vertical-align" style="height:70px;">
+        <img class="am-vertical-align-middle" src="${base}${systemConfig.shopLogo!}" title="${systemConfig.shopName!}">
+      </div>
+      <div class="am-u-sm-12 am-u-md-5 am-u-lg-4 shop-margin-vertical">
+        <form id="productSearchForm" action="${base}/shop/product/search" method="get" data-am-validator>
+        <div class="am-g">
+          <div class="am-u-sm-12 am-input-group am-input-group-sm am-input-group-primary">
+            <input type="text" id="productSearchKeyword" name="keyword" class="am-form-field" placeholder="请输入关键词..." value="${keyword!}" required>
+            <span class="am-input-group-btn">
+              <button class="am-btn am-btn-primary" type="submit"><span class="am-icon-search"></span></button>
+            </span>
+          </div>
+          <div class="am-u-sm-12 am-text-xs">
+            热门关键词: 
+            <%for(list in systemConfig.hotSearchList){%>
+            <a href="${base}/shop/product/search?keyword=${list}">${list} </a>
+            <%}%>
+          </div>
+        </div>
+        </form>
+      </div>
+      <div class="am-show-lg-only am-u-lg-4 am-text-right am-vertical-align" style="height:64px;">
+        <div class="am-text-sm am-vertical-align-middle">
+          7×24小时服务热线：<strong>${systemConfig.phone!}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 顶部操作栏和logo、搜索 end -->
+<!-- 导航 start -->
+<header class="am-topbar am-margin-bottom-0">
+  <%if (rootProductCategoryList! != null && rootProductCategoryList.~size > 0){%>
+  <div class="am-topbar-brand am-dropdown" data-am-dropdown>
+    <button class="am-btn am-btn-default am-btn-sm am-dropdown-toggle" data-am-dropdown-toggle>全部商品分类 <span class="am-icon-caret-down"></span></button>
+    <ul class="am-dropdown-content am-text-sm">
+      <%for(list in rootProductCategoryList){%>
+      <li><a href="${base}/shop/product/list?id=${list.id}"><span class="am-icon-list am-margin-right-xs"> </span>${list.name}</a></li>
+      <%var childrenList = list.children;%>
+      <%if (childrenList != null && childrenList.~size > 0){%>
+      <li class="am-divider-dashed"></li>
+      <%for(c1_List in childrenList){%>
+      <li class="category-sort am-kai">
+        <a href="${base}/shop/product/list?id=${c1_List.id}"><span class="am-icon-hand-o-right am-margin-right-xs"> </span>${c1_List.name}</a>
+        <%var childrenList2 = c1_List.children;%>
+        <%if (childrenList2 != null && childrenList2.~size > 0){%>
+        <div class="category-detail am-text-xs am-margin-vertical-xs am-hide">
+          <%for(c2_List in childrenList2){%>
+          <a href="${base}/shop/product/list?id=${c2_List.id}" class="am-badge am-badge-secondary am-margin-left-xs am-round">${c2_List.name}</a>
+          <%}%>
+        </div>
+        <%}%>
+      </li>
+      <%if (c1_ListLP.index != childrenList.~size){%> 
+      <li class="am-divider-dashed"></li>
+      <%}%>
+      <%}%>
+      <%}%>
+      <%if (listLP.index != rootProductCategoryList.~size){%> 
+      <li class="am-divider"></li>
+      <%}%>
+      <%}%>
+    </ul>
+  </div>
+  <%}else{%>
+  <h1 class="am-topbar-brand">
+    &nbsp;
+  </h1>
+  <%}%>
+
+  <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#doc-topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
+
+  <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
+    <ul class="am-nav am-nav-pills am-topbar-nav">
+      <%for(list in middleNavigationList){%>
+      <li>
+         <a href="${base}${list.url}"<%if (list.isBlankTarget == true){%> target="_blank"<%}%>>${list.name}</a>
+      </li>
+      <%}%>
+    </ul>
+    <!-- 
+    <div class="am-topbar-right">
+      <div class="am-dropdown" data-am-dropdown="{boundary: '.am-topbar'}">
+        <button class="am-btn am-btn-secondary am-topbar-btn am-btn-sm am-dropdown-toggle" data-am-dropdown-toggle>其他 <span class="am-icon-caret-down"></span></button>
+        <ul class="am-dropdown-content">
+          <li><a href="#">注册</a></li>
+          <li><a href="#">随便看看</a></li>
+        </ul>
+      </div>
+    </div>
+     -->
+
+    <div class="am-topbar-right">
+      <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick="window.open('${base}/shop/cartItem/list')"><span class="am-icon-shopping-cart am-margin-right-xs"></span>购物车</button>
+    </div>
+  </div>
+</header>
+</div>
+<!-- 导航 end -->

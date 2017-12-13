@@ -1,0 +1,97 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+<% include("/common/shop_head.html"){}%>
+<script type="text/javascript">
+$().ready( function() {
+  
+  // 删除
+  $(".deleteMessage").click( function() {
+	Modal.register(['confirm','alert']);
+    Modal.confirm("您确定要删除吗？",{
+      relatedTarget: this,
+	  onConfirm: function(options) {
+		location.href="${base}/shop/message/delete?id=" + $(this.relatedTarget).data('id');
+	  }
+	});
+  });
+	
+  // 显示消息内容
+  $(".showMessageContent").click( function() {
+    var $this = $(this);
+	var $showMessageContentIcon = $this.prev("span");
+	var $messageContentTr = $this.parent().parent().next(".messageContentTr");
+	if ($showMessageContentIcon.hasClass("am-icon-caret-down")) {
+	  $messageContentTr.show();
+	  $showMessageContentIcon.removeClass("am-icon-caret-down").addClass("am-icon-caret-up");
+	} else {
+	  $messageContentTr.hide();
+	  $showMessageContentIcon.removeClass("am-icon-caret-up").addClass("am-icon-caret-down");
+	}
+  });
+  
+});
+</script>
+</head>
+<body>
+<%include("/shop/header.html"){}%>
+<div class="am-cf shop-main">
+  <!-- sidebar start -->
+  <%include("/shop/sidebar.html"){}%>
+  <!-- sidebar end -->
+
+  <!-- content start -->
+  <div class="shop-content">
+    <div class="shop-content-body">
+      <ol class="am-breadcrumb am-margin-left am-margin-bottom-0">
+        <li><span class="am-icon-comment am-icon-fw"> </span>我的消息</li>
+        <li class="am-active">发件箱</li>
+      </ol>
+      <div class="am-panel am-panel-default am-text-xs am-margin-horizontal-sm">
+        <div class="am-panel-bd am-g am-padding-0 am-scrollable-horizontal">
+          <table class="am-table am-table-bordered am-table-striped am-table-hover am-text-nowrap am-text-xs am-margin-bottom-0">
+            <thead>
+              <tr>
+                <th>标题</th>
+				<th>收件人</th>
+				<th>时间</th>
+				<th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <%for(list in pager.list){%>
+			  <tr>
+			    <td>
+				  <span class="am-icon-caret-down"> </span><a class="showMessageContent" href="javascript: void(0);">${list.title}</a>
+				</td>
+                <td>
+                  ${list.toMember.username!"<span class=\"am-text-warning\">管理员</span>"}
+                </td>
+				<td>
+				  ${list.createDate,dateFormat="yyyy-MM-dd HH:mm:ss"}
+				</td>
+				<td>
+                  <a data-id="${list.id}" href="javascript:void(0);" class="deleteMessage am-badge am-badge-danger">删除</a>
+				</td>
+			  </tr>
+              <tr class="messageContentTr" style="display:none;">
+                <td colspan="4" class="am-padding-left">${list.content!'没有任何消息'}</td>
+              </tr>
+              <%}%>
+            </tbody>
+          </table>
+          <%if (pager.list.~size == 0){%>
+          <div class="am-kai am-text-center am-margin">
+            <h3>没有找到任何记录!</h3>
+          </div>
+          <%}%>
+        </div>
+      </div>
+      <%include("/shop/pager.html", {"pageNumber":pager.pageNumber,"pageSize":pager.pageSize,"pageCount":pager.totalPage,"property":"","keyword":"无","orderBy":"","orderType":"","baseUrl":"/shop/message/outbox"}) {}%>
+    </div>
+    <%include("/shop/footer.html"){}%>
+  </div>
+  <!-- content end -->
+</div>
+</body>
+</html>

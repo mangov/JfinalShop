@@ -1,0 +1,69 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+<% include("/common/shop_head.html"){}%>
+</head>
+<body>
+<%include("/shop/header.html"){}%>
+<div class="am-cf shop-main">
+  <!-- sidebar start -->
+  <%include("/shop/sidebar.html"){}%>
+  <!-- sidebar end -->
+
+  <!-- content start -->
+  <div class="shop-content">
+    <div class="shop-content-body">
+      <ol class="am-breadcrumb am-margin-left am-margin-bottom-0">
+        <li><span class="am-icon-comment am-icon-fw"> </span>我的消息</li>
+        <li class="am-active">回复消息</li>
+      </ol>
+      <form id="inputForm" action="${base}/shop/message/save" method="post" data-am-validator>
+      <input type="hidden" name="toMemberUsername" value="${message.fromMember.username!}" />
+      <div class="am-panel am-panel-default am-margin-horizontal-sm am-padding-top">
+        <div class="am-panel-bd am-g am-padding-0 am-form am-form-horizontal">
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-3 am-text-right">收件人</label>
+            <div class="am-u-sm-8 am-u-end">
+              ${message.fromMember.username!"管理员"}
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-3 am-text-right am-form-label">标题</label>
+            <div class="am-u-sm-8 am-u-end">
+              <input type="text" class="am-form-field" name="message.title" value="RE:${message.title}" placeholder="请填写标题!"  required>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-3 am-text-right am-form-label">内容</label>
+            <div class="am-u-sm-8 am-u-end">
+              <textarea rows="6" class="am-form-field" name="message.content" required></textarea>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-text-right am-form-label">选项</label>
+            <div class="am-u-sm-8 am-u-end">
+              <label class="am-radio-inline">
+                <input type="radio" name="message.isSaveDraftbox" value="false" checked>立即发送
+              </label>
+              <label class="am-radio-inline">
+                <input type="radio" name="message.isSaveDraftbox" value="true">保存到草稿箱
+              </label>
+            </div>
+          </div>
+          <hr data-am-widget="divider" class="am-divider am-divider-dashed" />
+          <div class="am-form-group am-form-group-sm">
+            <div class="am-u-sm-8 am-u-sm-offset-3">
+              <button type="submit" class="am-btn am-btn-primary am-btn-xs"><span class="am-icon-send"> 提 交</span></button>
+              <button type="button" class="am-btn am-btn-default am-btn-xs" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </form>
+    </div>
+    <%include("/shop/footer.html"){}%>
+  </div>
+  <!-- content end -->
+</div>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+<% include("/common/shop_head.html"){}%>
+</head>
+<body>
+<%include("/shop/header.html"){}%>
+<div class="am-cf shop-main">
+  <!-- content start -->
+  <div class="shop-content">
+    <div class="shop-content-body">
+      <div class="am-g">
+        <div class="am-u-md-3 am-hide-sm-only am-text-xs am-margin-left-0">
+          <table class="am-table am-table-bordered am-table-compact am-margin-top-xs">
+            <thead>
+            <tr>
+              <th class="am-primary">推荐文章</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%for(list in recommendArticleList!){%>
+            <tr>
+              <td>
+              <%if (strutil.length(list.title) < 15){%>
+                <a href="${base}${list.htmlFilePath}" title="${list.title}">${list.title}</a>
+              <%}else{%>
+                <a href="${base}${list.htmlFilePath}" title="${list.title}">${strutil.subStringTo(list.title,0,11)}...</a>
+              <%}%>
+              </td>
+            </tr>
+            <%if (listLP.index == 10){%>
+            <%break;%>
+            <%}%>
+            <%}%>
+            </tbody>
+          </table>
+          
+          <table class="am-table am-table-bordered am-table-compact">
+            <thead>
+            <tr>
+              <th class="am-warning">热点文章</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%for(list in hotArticleList!){%>
+            <tr>
+              <td>
+              <%if (strutil.length(list.title) < 15){%>
+                <a href="${base}${list.htmlFilePath}" title="${list.title}">${list.title}</a>
+              <%}else{%>
+                <a href="${base}${list.htmlFilePath}" title="${list.title}">${strutil.subStringTo(list.title,0,11)}...</a>
+              <%}%>
+              </td>
+            </tr>
+            <%if (listLP.index == 10){%>
+            <%break;%>
+            <%}%>
+            <%}%>
+            </tbody>
+          </table>
+        </div>
+        <div class="am-u-sm-12 am-u-md-9">
+          <div class="am-g am-margin-vertical-xs">
+            <div class="am-u-sm-12 am-u-md-7">
+              <ol class="am-breadcrumb am-margin-bottom-0">
+                <li><span class="am-icon-home"> </span>首页</li>
+                <%for(list in pathList){%>
+                <li><a href="${base}/shop/article/list?id=${list.id}">${list.name}</a></li>
+                <%}%>
+              </ol>
+            </div>
+            <div class="am-u-md-5 am-hide-sm-only">
+              <form id="articleSearchForm" action="${base}/shop/article/search" method="get">
+              <div class="am-input-group am-input-group-sm am-input-group-primary">
+                <input type="text" id="articleSearchKeyword" name="keyword" class="am-form-field" placeholder="请输入关键词...">
+                <span class="am-input-group-btn">
+                  <button class="am-btn am-btn-primary" type="submit"><span class="am-icon-search"></span></button>
+                </span>
+              </div>
+              </form>
+            </div>
+          </div>
+          <div class="am-panel am-panel-default">
+            <ul class="am-list am-list-static">
+                <%for(list in pager.list){%>
+                <li>
+                  <a href="${base}${list.htmlFilePath}" class="title">
+                    <%if (strutil.length(list.title) < 40){%>
+                    ${list.title}
+                    <%}else{%>
+                    ${strutil.subStringTo(list.title,0,40)}...
+                    <%}%>
+                  </a>
+                  <span>
+                    作者:<%if (list.author == ""){%>未知<%}else{%>${list.author}<%}%>
+                  </span>
+                  <span>
+                    ${list.createDate}
+                  </span>
+                  <div>
+                    <%if (strutil.length(list.contentText) < 100){%>
+                    ${list.contentText}
+                    <%}else{%>
+                    ${strutil.subStringTo(list.contentText,0,100)}...
+                    <%}%>
+                    <a href="${base}${list.htmlFilePath}">[阅读全文]</a>
+                  </div>
+                </li>
+                <%}%>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <%include("/shop/friend_link.html"){}%>
+    </div>
+    <%include("/shop/footer.html"){}%>
+  </div>
+  <!-- content end -->
+</div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '添加/编辑会员等级', validatorJS: true}){}%>
+<%var isAdd = false;
+  var isEdit = false;
+  if(isEmpty(memberRank.id)){
+	isAdd = true;
+  }else{
+	isEdit = true;
+  }%>
+</head>
+<body>
+<!-- content start -->
+<div class="admin-content">
+  <div class="admin-content-body">
+    <div class="am-cf app-padding-title">
+      <div class="am-fl am-cf">
+        <strong class="am-text-primary am-text-lg">会员管理</strong> / <small><%if(isAdd){%>添加会员等级<%}else{%>编辑会员等级<%}%></small>
+      </div>
+    </div>
+  
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+	
+    <form class="validator-form" class="am-form" action="<%if(isAdd){%>${base}/memberRank/save<%}else{%>${base}/memberRank/update<%}%>" method="post">
+	<input type="hidden" name="memberRank.id" value="${memberRank.id!}" />
+    <div class="am-form am-margin am-form-horizontal" >
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">等级名称</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="text" class="am-form-field" name="memberRank.name" value="${memberRank.name!}" required />
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">优惠百分比</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="number" class="am-form-field" name="memberRank.preferentialScale" value="${memberRank.preferentialScale!100}" min="0" placeholder="单位: %，若输入90，表示该会员等级以商品价格的90%进行销售" required />
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">所需积分</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="number" class="am-form-field" name="memberRank.point" value="${memberRank.point!}" min="0" max="100000" placeholder="只允许输入零或正整数" required />
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">是否默认</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <label class="am-radio-inline">
+            <input type="radio" name="memberRank.isDefault" value="true"<%if (isAdd || memberRank.isDefault){%> checked<%}%> required> 是
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="memberRank.isDefault" value="false"<%if (isAdd || !memberRank.isDefault){%> checked<%}%>> 否
+          </label>
+        </div>
+      </div>
+      <hr data-am-widget="divider" class="am-divider am-divider-dashed" />
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-8 am-u-sm-offset-4 am-u-md-9 am-u-md-offset-3">
+          <button type="submit" class="am-btn am-btn-primary"><span class="am-icon-save">  保  存</span></button>
+          <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div> 
+</div>
+<!-- content end -->
+</body>
+</html>

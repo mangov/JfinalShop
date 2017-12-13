@@ -1,0 +1,97 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title:'管理中心'}){}%>
+</head>
+<script>
+$().ready(function() {
+  if(self.location==top.location){
+    location.href='${base}/admin/center';
+  }else{
+	
+  }
+});
+</script>
+<body>
+  <div class="admin-content">
+    <div class="admin-content-body">
+      <div class="am-cf app-padding-title">
+        <div class="am-fl am-cf">
+          <strong class="am-text-primary am-text-lg">首页</strong> / <small>管理中心</small>
+        </div>
+      </div>
+
+      <hr data-am-widget="divider" style="" class="am-divider am-divider-dotted am-margin-top-0" />
+
+      <ul class="am-avg-sm-1 am-avg-md-4 am-margin am-padding am-text-center admin-content-list ">
+        <li><a href="#" class="am-text-success"><span class="am-icon-btn am-icon-file-text"></span><br />未处理订单<br />${unprocessedOrderCount!}</a></li>
+        <li><a href="#" class="am-text-warning"><span class="am-icon-btn am-icon-briefcase"></span><br />等待发货订单数<br />${paidUnshippedOrderCount!}</a></li>
+        <li><a href="#" class="am-text-danger"><span class="am-icon-btn am-icon-recycle"></span><br />未读消息<br />${unreadMessageCount!}</a></li>
+        <li><a href="#" class="am-text-secondary"><span class="am-icon-btn am-icon-user-md"></span><br />商品库存报警<br />${storeAlertCount}</a></li>
+      </ul>
+
+      <div class="am-g">
+        <div class="am-u-md-6">
+          <div class="am-panel am-panel-default">
+            <div class="am-panel-hd am-cf" data-am-collapse="{target: '#collapse-panel-1'}">
+              系统信息统计<span class="am-icon-chevron-down am-fr"></span>
+            </div>
+            <div id="collapse-panel-1" class="am-in">
+              <table class="am-table am-table-bd am-table-bdrs am-table-striped am-table-hover">
+                <tbody>
+                  <tr>
+                    <td>已上架商品:</td>
+                    <td>${marketableProductCount!}</td>
+                  </tr>
+                  <tr>
+                    <td>已下架商品:</td>
+                    <td>${unMarketableProductCount!}</td>
+                  </tr>
+                  <tr>
+                    <td>会员总数:</td>
+                    <td>${memberTotalCount!}</td>
+                  </tr>
+                  <tr>
+                    <td>文章总数:</td>
+                    <td>${articleTotalCount!}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="am-u-md-6">
+          <div class="am-panel am-panel-default">
+            <div class="am-panel-hd am-cf" data-am-collapse="{target: '#collapse-panel-2'}">
+              主机信息统计<span class="am-icon-chevron-down am-fr"></span>
+            </div>
+            <div id="collapse-panel-2" class="am-in">
+              <table class="am-table am-table-bd am-table-bdrs am-table-striped am-table-hover">
+                <tbody>
+                  <tr>
+                    <td>JAVA版本:</td>
+                    <td>${java_version!}</td>
+                  </tr>
+                  <tr>
+                    <td>操作系统名称:</td>
+                    <td>${os!}</td>
+                  </tr>
+                  <tr>
+                    <td>操作系统构架:</td>
+                    <td>${os_arch!}</td>
+                  </tr>
+                  <tr>
+                    <td>操作系统版本</td>
+                    <td>${os_version!}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

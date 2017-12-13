@@ -1,0 +1,74 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title:'地区管理', metadataJS: true}){}%>
+<script type="text/javascript">
+$().ready( function() {
+  var $delete = $(".delete");
+  // 地区删除
+  $delete.click( function() {
+    var $this = $(this);
+    var id = $this.metadata().id;
+    Modal.register(['confirm','alert']);
+    Modal.confirm("您确定要删除吗？",{
+      relatedTarget: this,
+      onConfirm: function(options) {
+        $.ajax({
+    	  url: "${base}/area/delete",
+          data: {"id": id},
+          dataType: "json",
+          async: false,
+    	  success: function(data) {
+    		if (data.status == "success") {
+    		  $this.parent().remove();
+    		}
+    		Modal.alert(data.message);
+    	  }
+    	});
+      }
+    });
+  });
+});
+</script>
+</head>
+<body>
+  <div class="admin-content">
+    <div class="admin-content-body">
+      <div class="am-cf app-padding-title">
+        <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">地区管理</strong> / <small><%if (isEmpty(parent.id)){%>顶级地区<%}else{%>上级地区 - [${parent.name!}]<%}%></small></div>
+      </div>
+      
+      <hr data-am-widget="divider" class="am-divider am-divider-dotted am-margin-0" />
+    
+      <div class="am-g">
+        <%for(list in areaList){%>
+        <div class="am-btn-group am-btn-group-xs am-margin-xs">
+          <a class="am-btn am-btn-secondary" href="${base}/area/list?parentId=${list.id}"><span class="am-icon-map-marker"> ${list.name}</span></a>
+          <button type="button" class="am-btn am-btn-default am-text-secondary" onclick="location.href='${base}/area/edit?id=${list.id}';"><span class="am-icon-edit"></span></button>
+          <button type="button" class="am-btn am-btn-default am-text-danger delete {id: '${list.id}'}"><span class="am-icon-trash-o"></span></button>
+        </div>
+        <%}%>
+        <%if (areaList.~size == 0){%>
+        无下级地区! 
+        <%}%>
+      </div>
+    
+      <hr data-am-widget="divider" style="" class="am-divider am-divider-dashed" />
+    
+      <div class="am-margin">
+        <button type="button" class="am-btn am-btn-primary am-btn-xs" onclick="location.href='${base}/area/add<%if(!isEmpty(parent.id)){%>?parentId=${parent.id!}<%}%>';"><span class="am-icon-plus"> 添加地区</span></button>
+        <button type="button" class="am-btn am-btn-primary am-btn-xs" 
+            <%if (!isEmpty(parent.id)){%>
+            <%if (!isEmpty(parent.parent_id)){%>
+            onclick="location.href='${base}/area/list?parentId=${parent.parent_id!}'"
+            <%}else{%>
+            onclick="location.href='${base}/area/list'"
+            <%}%>
+            <%}else{%>
+            disabled="disabled"
+            <%}%>><span class="am-icon-level-up"> 上级地区</span></button>
+       </div>
+     </div>
+   </div>
+</body>
+</html>

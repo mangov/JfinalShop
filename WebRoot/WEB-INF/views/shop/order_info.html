@@ -1,0 +1,315 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+<% include("/common/shop_head.html",{noFormJS:true, lSelectJS: true}){}%>
+<script type="text/javascript">
+$().ready( function() {
+	
+  $('#myCollapse').collapse({
+    toggle: false
+  });
+	
+  // 地区选择菜单
+  $(".areaSelect").lSelect({
+    url: "${base}/area/ajaxChildrenArea"// Json数据获取url
+  });
+
+  var productTotalPrice = ${productTotalPrice};// 商品总价格
+  var deliveryFee = 0;// 配送费用
+  var paymentFee = 0;// 支付费用
+	
+  var $orderInfoForm = $("#orderInfoForm");
+  var $receiverInput = $("input[name='receiver.id']");
+  var $receiverInputChecked = $("input[name='receiver.id']:checked");
+  var $otherReceiverTable = $("#otherReceiverTable");
+  var $otherReceiverTableInput = $(".otherReceiverTable :input");
+  var $deliveryTypeInput = $("input[name='deliveryType_id']");
+  var $paymentConfig = $(".paymentConfig");
+  var $paymentConfigInput = $("input[name='paymentConfig_id']");
+  var $productTotalPrice = $("#productTotalPrice");
+  var $deliveryFee = $("#deliveryFee");
+  var $paymentFee = $("#paymentFee");
+  var $orderAmount = $("#orderAmount");
+	
+  // 如果默认选择“其它收货地址”，则显示“其它收货地址输入框”
+  if ($receiverInputChecked.val() == "") {
+    $otherReceiverTable.show();
+	$otherReceiverTableInput.attr('required','required');
+  } else {
+	$otherReceiverTable.hide();
+	$otherReceiverTableInput.removeAttr('required');
+  }
+	
+  // 显示“其它收货地址输入框”
+  $receiverInput.click( function() {
+    $this = $(this);
+	if ($this.val() == "") {
+	  $otherReceiverTable.show();
+	  $otherReceiverTableInput.attr('required','required');
+	} else {
+	  $otherReceiverTable.hide();
+	  $otherReceiverTableInput.removeAttr('required');
+	}
+  });
+	
+  // 根据配送方式修改配送费用、订单总金额，并显示/隐藏支付方式
+  $deliveryTypeInput.click( function() {
+    var $this = $(this);
+    var $parent = $this.parent();
+    $paymentConfigInput.attr("checked", false);
+    paymentFee = 0;
+	var deliveryMethod = $parent.metadata().deliveryMethod;
+	if (deliveryMethod == "deliveryAgainstPayment") {
+	  $paymentConfigInput.attr('required','required');
+	  $paymentConfig.show();
+	} else {
+	  $paymentConfigInput.removeAttr('required');
+	  $paymentConfig.hide();
+	}
+	deliveryFee = $parent.metadata().deliveryFee;
+	$deliveryFee.text(orderUnitCurrencyFormat(deliveryFee));
+	$paymentFee.text(orderUnitCurrencyFormat(paymentFee));
+	$orderAmount.text(orderUnitCurrencyFormat(floatAdd(floatAdd(productTotalPrice, deliveryFee), paymentFee)));
+  });
+	
+  // 根据支付方式修改订单总金额
+  $paymentConfigInput.click( function() {
+    var $this = $(this);
+	var $parent = $this.parent();
+	var paymentFeeTypeChecked = $parent.metadata().paymentFeeType;
+	var paymentFeeChecked = $parent.metadata().paymentFee;
+    if (paymentFeeTypeChecked == "scale") {
+      paymentFee = floatMul(floatAdd(productTotalPrice, deliveryFee), floatDiv(paymentFeeChecked, 100));
+	} else {
+	  paymentFee = paymentFeeChecked;
+	}
+	$paymentFee.text(orderUnitCurrencyFormat(paymentFee));
+	$orderAmount.text(orderUnitCurrencyFormat(floatAdd(productTotalPrice, floatAdd(deliveryFee, paymentFee))));
+  });
+	
+});
+</script>
+</head>
+<body>
+<%include("/shop/header.html"){}%>
+<div class="am-cf shop-main">
+  <!-- content start -->
+  <div class="shop-content">
+    <div class="shop-content-body">
+	  <form id="orderInfoForm" action="${base}/shop/order/save" method="post" data-am-validator>
+      <div class="am-panel-group am-margin am-text-xs" id="myCollapse">
+        <div class="am-panel am-panel-default">
+          <div class="am-panel-hd">
+            <h4 class="am-panel-title" data-am-collapse="{parent: '#myCollapse', target: '#myCollapse-1'}">
+              收货信息
+            </h4>
+          </div>
+          <div id="myCollapse-1" class="am-panel-collapse am-collapse am-in">
+            <div class="am-panel-bd am-g">
+              <div class="am-u-md-12 am-u-lg-4">
+                <%var notExistDefault=true;%>
+                <%for(list in loginMember.receiverList){%>
+                <label class="am-radio">
+                  <input type="radio" name="receiver.id" value="${list.id}"<%if (list.isDefault){ notExistDefault=true; %> checked<%}%> data-am-ucheck />${list.name}
+                </label>
+                <strong>收货人：</strong>${list.name}&nbsp;&nbsp;&nbsp;&nbsp;
+                <%if (list.mobile != null){%>
+                <strong>手机：</strong>${list.mobile}&nbsp;&nbsp;&nbsp;&nbsp;
+                <%}else{%>
+                <strong>电话：</strong>${list.phone}&nbsp;&nbsp;&nbsp;&nbsp;
+                <%}%>
+                <br><strong>收货地址：</strong>${list.address}
+                <%}%>
+                <label class="am-radio">
+                  <input type="radio" name="receiver.id" value=""<%if (loginMember.receiverList == null || loginMember.receiverList.~size == 0 || notExistDefault){%> checked<%}%> data-am-ucheck />
+                  填写收货地址
+                </label>
+              </div>
+              <div class="am-u-sm-12 am-u-lg-8 am-form am-form-horizontal otherReceiverTable" id="otherReceiverTable">
+                <div class="am-form-group am-form-group-sm">
+                  <label class="am-u-sm-3 am-form-label">收货人</label>
+                  <div class="am-u-sm-8 am-u-end">
+                    <input type="text" class="am-form-field" name="receiver.name" value="" placeholder="请填写收货人姓名！"  required>
+                  </div>
+                </div>
+                <div class="am-form-group am-form-group-sm">
+                  <label class="am-u-sm-3 am-form-label">地区</label>
+                  <div class="am-u-sm-8 am-u-end">
+                    <input type="hidden" name="receiver.areaPath" class="areaSelect" value="" required>
+                  </div>
+                </div>
+                <div class="am-form-group am-form-group-sm">
+                  <label class="am-u-sm-3 am-form-label">地址</label>
+                  <div class="am-u-sm-8 am-u-end">
+                    <input type="text" class="am-form-field" name="receiver.address" value="" placeholder="请填写地址！"  required>
+                  </div>
+                </div>
+                <div class="am-form-group am-form-group-sm">
+                  <label class="am-u-sm-3 am-form-label">电话</label>
+                  <div class="am-u-sm-8 am-u-end">
+                    <input type="text" class="am-form-field js-pattern-phone" name="receiver.phone" value="" placeholder="电话、手机必须填写其中一项！">
+                  </div>
+                </div>
+                <div class="am-form-group am-form-group-sm">
+                  <label class="am-u-sm-3 am-form-label">手机</label>
+                  <div class="am-u-sm-8 am-u-end">
+                    <input type="text" class="am-form-field js-pattern-mobile" name="receiver.mobile" value="" placeholder="" required>
+                  </div>
+                </div>
+                <div class="am-form-group am-form-group-sm">
+                  <label class="am-u-sm-3 am-form-label">邮编</label>
+                  <div class="am-u-sm-8 am-u-end">
+                    <input type="number" class="am-form-field js-pattern-zipCode" name="receiver.zipCode" value="" placeholder="请填写邮编！" required>
+                  </div>
+                </div>
+                <div class="am-form-group am-form-group-sm">
+                  <label class="am-u-sm-3 am-form-label">保存</label>
+                  <div class="am-u-sm-8 am-u-end">
+                    <label class="am-radio-inline">
+                      <input type="radio" name="isSaveReceiver" value="true" checked />是
+                    </label>
+                    <label class="am-radio-inline">
+                      <input type="radio" name="isSaveReceiver" value="false" />否
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="am-panel am-panel-default">
+          <div class="am-panel-hd">
+            <h4 class="am-panel-title" data-am-collapse="{parent: '#myCollapse', target: '#myCollapse-2'}">
+              配送方式
+            </h4>
+          </div>
+          <div id="myCollapse-2" class="am-panel-collapse am-collapse am-in">
+            <div class="am-panel-bd">
+              <%for(list in allDeliveryType){%>
+			  <label class="am-radio {deliveryFee: '${deliveryFee(totalWeightGram,list.id)}', deliveryMethod: '${list.deliveryMethod}'}">
+			    <input type="radio" name="deliveryType_id" value="${list.id}"<%if (listLP.index==1){%> required<%}%> />
+				${list.name}
+			  </label>
+			  <strong class="am-text-danger">+ ${deliveryFee(totalWeightGram,list.id),orderCurrencyFormat}</strong>
+			  ${list.description!}
+			  <%}%>
+            </div>
+          </div>
+        </div>
+        <div class="am-panel am-panel-default paymentConfig">
+          <div class="am-panel-hd">
+            <h4 class="am-panel-title" data-am-collapse="{parent: '#myCollapse', target: '#myCollapse-3'}">
+              支付方式
+            </h4>
+          </div>
+          <div id="myCollapse-3" class="am-panel-collapse am-collapse am-in">
+            <div class="am-panel-bd">
+              <%for(list in allPaymentConfig){%>
+			  <label class="am-radio {paymentFeeType: '${list.paymentFeeType}', paymentFee: '${list.paymentFee}'}">
+			    <input type="radio" name="paymentConfig_id" value="${list.id}"<%if (listLP.index==1){%> required<%}%> />
+				${list.name}
+			  </label>
+			  <%if (list.paymentFeeType == "scale" && list.paymentFee != 0){%>
+			  [支付费率：${list.paymentFee}%]
+			  <%}else if(list.paymentFeeType == "fixed" && list.paymentFee != 0){%>
+			  [支付费用：${list.paymentFee,orderUnitCurrencyFormat}]
+			  <%}%>
+			  <p>${list.description!}</p>
+			  <%}%>
+            </div>
+          </div>
+        </div>
+        
+        <div class="am-panel am-panel-default">
+          <div class="am-panel-hd">
+            <h4 class="am-panel-title" data-am-collapse="{parent: '#myCollapse', target: '#myCollapse-4'}">
+              附言
+            </h4>
+          </div>
+          <div id="myCollapse-4" class="am-panel-collapse am-collapse am-in">
+            <div class="am-panel-bd am-form">
+              <input type="text" class="am-input-sm" name="memo" />
+            </div>
+          </div>
+        </div>
+        
+        <div class="am-panel am-panel-default">
+          <div class="am-panel-hd">
+            <h4 class="am-panel-title" data-am-collapse="{parent: '#myCollapse', target: '#myCollapse-5'}">
+              商品信息
+            </h4>
+          </div>
+          <div id="myCollapse-5" class="am-panel-collapse am-collapse am-in">
+            <div class="am-panel-bd am-g am-padding-0 am-scrollable-horizontal">
+              <table class="am-table am-table-bordered am-table-striped am-table-hover am-text-nowrap am-text-xs am-margin-bottom-0">
+                <thead>
+                  <tr>
+                    <th>商品</th>
+                    <th>销售价格</th>
+                    <%if (loginMember.memberRank.preferentialScale != 100){%>
+                    <th>优惠价格</th>
+                    <%}%>
+                    <th>商品重量</th>
+                    <th>小计</th>
+                    <th>数量</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <%for(list in cartItemList){%>
+                  <tr>
+                    <td>
+                      <a href="${base}${list.product.htmlFilePath}" target="_blank">
+                        <img src="${base}${list.product.productImageList[0].thumbnailProductImagePath!systemConfig.defaultThumbnailProductImagePath}" /> ${list.product.name}
+                      </a>
+                    </td>
+                    <%if (loginMember.memberRank.preferentialScale != 100){%>
+                    <td class="am-text-middle">
+                      <del>${list.product.price,priceCurrencyFormat}</del>
+                    </td>
+                    <td class="am-text-middle">
+                      ${list.preferentialPrice,priceCurrencyFormat}
+                    </td>
+                    <%}else{%>
+                    <td class="am-text-middle">
+                      ${list.product.price,priceCurrencyFormat}
+                    </td>
+                    <%}%>
+                    <td class="am-text-middle">
+                      ${list.product.weight} ${i18n("WeightUnit." + list.product.weightUnit)}
+                    </td>
+                    <td class="am-text-middle">
+                      <span class="am-text-danger">${list.subtotalPrice,orderCurrencyFormat}</span>
+                    </td>
+                    <td class="am-text-middle">
+                      ${list.quantity}
+                    </td>
+                  </tr>
+                  <%}%>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <p>
+          商品共计：<span class="am-text-danger">${totalQuantity}</span> 件&nbsp;&nbsp;&nbsp;&nbsp;
+          <%if (systemConfig.pointType != "disable"){%>
+          积分：<span id="totalPoint" class="am-text-danger">${totalPoint}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+          <%}%>
+          商品总金额：<span id="productTotalPrice" class="am-text-danger">${productTotalPrice,orderUnitCurrencyFormat}</span>&nbsp;&nbsp;&nbsp;&nbsp;<br class="am-show-sm-only">
+          配送费用：<span id="deliveryFee" class="am-text-danger">${0,orderUnitCurrencyFormat}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+          支付手续费：<span id="paymentFee" class="am-text-danger">${0,orderUnitCurrencyFormat}</span>&nbsp;&nbsp;&nbsp;&nbsp;<br class="am-show-sm-only">
+          订单总金额：<span id="orderAmount" class="am-text-danger">${productTotalPrice,orderUnitCurrencyFormat}</span>
+        </p>
+        <div class="am-cf am-margin">
+          <a class="backCartItem  am-btn am-btn-default am-btn-xs am-fl" href="${base}/shop/cartItem/list"><span class="am-icon-toggle-left am-icon-fw">&nbsp;</span>返回购物车</a>
+          <button type="submit" class="formButton am-btn am-btn-success am-btn-xs am-fr"><span class="am-icon-money am-icon-fw">&nbsp;</span>去结算</a>
+        </div>
+      </div>
+      </form>
+    </div>
+    <%include("/shop/footer.html"){}%>
+  </div>
+  <!-- content end -->
+</div>
+</body>
+</html>

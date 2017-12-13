@@ -1,0 +1,429 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '添加/编辑商品', loadUE: true, validatorJS: true, livequeryJS: true}){}%>
+<%
+var isAdd = false;
+var isEdit = false;
+if(isEmpty(product.id)){
+  isAdd = true;
+}else{
+  isEdit = true;
+}%>
+</head>
+<body>
+<!-- content start -->
+<div class="admin-content">
+  <div class="admin-content-body">
+    <div class="am-cf app-padding-title">
+      <div class="am-fl am-cf">
+        <strong class="am-text-primary am-text-lg">商品管理</strong> / <small><%if(isAdd){%>添加商品<%}else{%>编辑商品<%}%></small>
+      </div>
+    </div>
+
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+    
+    <form class="validator-form" action="<%if (isAdd){%>${base}/product/save<%}else{%>${base}/product/update<%}%>" enctype="multipart/form-data" method="post">
+    <input type="hidden" name="product.id" value="${product.id!}" />
+    <div class="am-tabs am-margin" data-am-tabs="{noSwipe: 1}" id="doc-my-tabs">
+      <ul class="am-tabs-nav am-nav am-nav-tabs">
+        <li class="am-active"><a href="#tab1">基本信息</a></li>
+        <li><a href="#tab2">商品图片</a></li>
+        <li><a href="#tab3">商品描述</a></li>
+        <li><a href="#tab4">商品属性</a></li>
+      </ul>
+
+      <div class="am-tabs-bd am-form am-tabs-bd-ofv">
+        <div class="am-tab-panel am-fade am-in am-active am-form-horizontal" id="tab1">
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">商品名称</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="text" class="am-form-field" name="product.name" value="${product.name!}" required />
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">货号</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="text" class="am-form-field" name="product.productSn" value="${product.productSn!}" placeholder="若留空则由系统随机生成" />
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">商品分类</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <select name="product.productCategory_id" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}" required>
+                <option value=""></option>
+                <%for(list in productCategoryTreeList){%>
+                <option value="${list.id}"<%if (list.id == product.productCategory_id!){%> selected<%}%>>
+                  <%if (list.level != 0){%>
+                  <%for( i in range(0,list.level)){%>--<%}%>
+                  <%}%>
+                  ${list.name}  
+                </option>
+                <%}%>
+              </select>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">商品品牌</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <select name="product.brand_id" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}">
+                <option value=""></option>
+                <%for(list in allBrand){%>
+                <option value="${list.id}"<%if (list.id == product.brand_id!){%> selected <%}%>>
+                  ${list.name}
+                </option>
+                <%}%>
+              </select>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">本店售价</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="number" class="am-form-field" name="product.price" value="${product.price!0}" min="0" required />
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">市场售价</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="number" class="am-form-field" name="product.marketPrice" value="${product.marketPrice!0}" min="0" required />
+            </div>
+          </div>
+          <%if (systemConfig.pointType == "productSet"){%>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">积分</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="number" class="am-form-field" name="product.point" value="${product.point!0}" placeholder="积分必须为零或正整数" min="0" max="10000" />
+            </div>
+          </div>
+          <%}%>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">商品重量</label>
+            <div class="am-u-sm-5 am-u-md-7">
+              <input type="number" class="am-form-field" name="product.weight" value="${product.weight!0}" placeholder="0表示不计重量" min="0" required />
+            </div>
+            <div class="am-u-sm-3 am-u-md-2">
+              <select name="weightUnit" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}" required>
+                <%for(list in allWeightUnit){%>
+                <option value="${list}"<%if (list == product.weightUnit!){%> selected <%}%>>
+                  ${i18n("WeightUnit."+list)}
+                </option>
+                <%}%>
+              </select>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">库存量</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="number" class="am-form-field" name="product.store" value="${product.store!}" placeholder="只允许输入零或正整数，为空表示不计库存" min="0" max="10000" />
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">精品推荐</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <label class="am-radio-inline">
+                <input type="radio" name="product.isBest" value="true"<%if (product.isBest! == true){%> checked<%}%> required> 是
+              </label>
+              <label class="am-radio-inline">
+                <input type="radio" name="product.isBest" value="false"<%if (isAdd || product.isBest == false){%> checked<%}%>> 否
+              </label>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">新品推荐</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <label class="am-radio-inline">
+                <input type="radio" name="product.isNew" value="true"<%if (product.isNew! == true){%> checked<%}%> required> 是
+              </label>
+              <label class="am-radio-inline">
+                <input type="radio" name="product.isNew" value="false"<%if (isAdd || product.isNew == false){%> checked<%}%>> 否
+              </label>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">热销推荐</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <label class="am-radio-inline">
+                <input type="radio" name="product.isHot" value="true"<%if (product.isHot! == true){%> checked<%}%> required> 是
+              </label>
+              <label class="am-radio-inline">
+                <input type="radio" name="product.isHot" value="false"<%if (isAdd || product.isHot == false){%> checked<%}%>> 否
+              </label>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">是否上架</label>
+            <div class="am-u-sm-8 am-u-md-9 am-btn-group" data-am-button>
+                <label class="am-btn am-btn-default am-btn-xs">
+                  <input type="radio" name="product.isMarketable" value="true"<%if (isAdd || product.isMarketable == true){%> checked<%}%> required> 是
+                </label>
+                <label class="am-btn am-btn-default am-btn-xs">
+                  <input type="radio" name="product.isMarketable" value="false"<%if (product.isMarketable! == false){%> checked<%}%>> 否
+                </label>
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">关键词</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <input type="text" class="am-form-field" name="product.metaKeywords" value="${product.metaKeywords!}">
+            </div>
+          </div>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">页面描述</label>
+            <div class="am-u-sm-8 am-u-md-9">
+              <textarea rows="10" class="am-form-field" name="product.metaDescription">${product.metaDescription!}</textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="am-tab-panel am-fade app-min-height app-product-image" id="tab2">
+          <ul class="am-avg-sm-2 am-avg-md-4 am-thumbnails" id="file-list">
+            <%for(list in product.productImageList!){%>
+            <li>
+              <div class="am-thumbnail">
+                <input type="hidden" name="productImageIds" value="${list.id}" />
+                <input type="hidden" name="productImageParameterTypes" value="productImageId" />
+                <img src="${base}${list.bigProductImagePath}" class="am-img-bdrs">
+                <ul class="am-thumbnail-caption am-avg-sm-3">
+                  <li><button type="button" class="am-btn am-btn-default am-text-warning am-btn-xs am-center opr-img-left"><span class="am-icon-chevron-left"></span></button></li>
+                  <li><button type="button" class="am-btn am-btn-default am-text-danger am-btn-xs am-center opr-img-delete"><span class="am-icon-trash"></span></button></li>
+                  <li><button type="button" class="am-btn am-btn-default am-text-warning am-btn-xs am-center opr-img-right"><span class="am-icon-chevron-right"></span></button></li>
+                </ul>
+                <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+                <ul class="am-thumbnail-caption am-avg-sm-1">
+                  <li>
+                    <div class="am-form-group am-form-file">
+                      <button type="button" class="am-btn am-btn-success am-btn-xs am-center" disabled="disabled">
+                        <i class="am-icon-info-circle"></i> 已经上传
+                      </button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <%}%>
+            <li>
+              <div class="am-thumbnail">
+                <div class="app-product-image-preview am-text-center am-text-warning">
+                  暂无图片
+                </div>
+                <ul class="am-thumbnail-caption am-avg-sm-3">
+                  <li><button type="button" class="am-btn am-btn-default am-text-warning am-btn-xs am-center opr-img-left"><span class="am-icon-chevron-left"></span></button></li>
+                  <li><button type="button" class="am-btn am-btn-default am-text-danger am-btn-xs am-center opr-img-delete" disabled="disabled"><span class="am-icon-trash"></span></button></li>
+                  <li><button type="button" class="am-btn am-btn-default am-text-warning am-btn-xs am-center opr-img-right"><span class="am-icon-chevron-right"></span></button></li>
+                </ul>
+                <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+                <ul class="am-thumbnail-caption am-avg-sm-1">
+                  <li>
+                    <div class="am-form-group am-form-file">
+                      <%if (systemConfig.allowedUploadImageExtension != ""){%>
+                      <button type="button" class="am-btn am-btn-default am-btn-xs am-center">
+                        <i class="am-icon-cloud-upload"></i> 上传图片
+                      </button>
+                      <input class="doc-form-file" name="productImages0" type="file">
+                      <%}else{%>
+                      <button type="button" class="am-btn am-btn-danger am-btn-xs am-center" disabled="disabled">
+                        <i class="am-icon-warning"></i> 不允许上传
+                      </button>
+                      <%}%>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+            
+          <div class="am-alert am-alert-warning am-text-xs">
+            <span class="am-icon-warning"> </span>
+            <%if (systemConfig.allowedUploadImageExtension != ""){%>
+            <%if ((systemConfig.uploadLimit != 0) && (systemConfig.uploadLimit < 1024)){%>
+            小于${systemConfig.uploadLimit}KB
+            <%}else if (systemConfig.uploadLimit >= 1024){%>
+            小于${systemConfig.uploadLimit / 1024}MB
+            <%}%> 
+            <%for(list in strutil.split(systemConfig.allowedUploadImageExtension,@com.jfinalshop.bean.SystemConfig.EXTENSION_SEPARATOR)){%>
+            <%if (listLP.last){%>
+            *.${list};
+            <%}else{%>
+            *.${list}
+            <%}%>
+            <%}%>
+            <%}else{%>
+            系统设置不允许上传图片文件!
+            <%}%>
+          </div>
+        </div>
+        
+        <div class="am-tab-panel am-fade" id="tab3">
+          <div>
+            <script id="editor" name="product.description" type="text/plain">
+              ${product.description!}
+            </script>
+          </div>
+        </div>
+        
+        <div class="am-tab-panel am-fade am-form-horizontal app-min-height" id="tab4">
+          <div class="am-form-group am-form-group-sm" id="productTypeTr">
+            <label class="am-u-sm-6 am-u-md-4 am-text-right am-form-label">商品类型</label>
+            <div class="am-u-sm-6 am-u-md-8">
+              <select id="productTypeId" name="product.productType_id" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}">
+                <option value=""></option>
+                <%for(list in allProductType){%>
+                <option value="${list.id}"<%if ((isEdit) && (list.id == product.productType_id)){%> selected <%}%>>${list.name}</option>
+                <%}%>
+              </select>
+            </div>
+          </div>
+          <%for(list in product.productType.enabledProductAttributeList!){%>
+          <div class="am-form-group am-form-group-sm productAttributeContentTr">
+            <label class="am-u-sm-6 am-u-md-4 am-text-right am-form-label"> ${list.name}</label>
+            <div class="am-u-sm-6 am-u-md-8">
+              <%if (list.attributeType == "text"){%>
+              <input type="text" class="am-form-field" name="${list.id}" value="${product.productAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+              <%}else if (list.attributeType == "number"){%>
+              <input type="number" class="am-form-field" name="${list.id}" value="${product.productAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+              <%}else if (list.attributeType == "alphaint"){%> <!-- 这里限制只让输入字母 -->
+              <input type="text" class="am-form-field js-pattern-alphaint" name="${list.id}" value="${product.productAttributeMap[list.id]!}" pattern="^([a-zA-Z]+)$"<%if (list.isRequired){%> required<%}%>>
+              <%}else if (list.attributeType == "select"){%>
+              <select name="${list.id}" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}"<%if (list.isRequired){%> required<%}%>>
+                <option value=""></option>
+                <%for(attributeOptionList in list.attributeOptionList){%>
+                <option value="${attributeOptionList}"<%if (product.productAttributeMap[list.id] == attributeOptionList){%> selected<%}%>>${attributeOptionList}</option>
+                <%}%>
+              </select>
+              <%}else if (list.attributeType == "checkbox"){%>
+              <%for(attributeOptionList in list.attributeOptionList){%>
+              <label class="am-checkbox-inline">
+                <input type="checkbox" name="${list.id}" value="${attributeOptionList}"<%if (strutil.contain(product.productAttributeMap[list.id],attributeOptionList)){%> checked<%}%><%if (list.isRequired && attributeOptionListLP.index==1){%> required<%}%>>${attributeOptionList}
+              </label>
+              <%}%>
+              <%}else if (list.attributeType == "date"){%>
+              <div class="am-form-group am-form-icon">
+                <i class="am-icon-calendar"></i>
+                <input type="date" class="am-form-field" name="${list.id}" value="${product.productAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+              </div>
+              <%}%>
+            </div>
+          </div>
+          <%}%>
+        </div>
+        
+      </div>
+    </div>
+    <div class="am-margin">
+      <button type="submit" class="am-btn am-btn-primary"> 保  存 </button>
+      <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"> 返  回 </button>
+    </div>
+    </form>
+  </div>
+</div>
+<!-- content end -->
+<script>
+  $().ready(function() {
+    // 查询商品属性
+    $("#productTypeId").change( function() {
+      $(".productAttributeContentTr").remove();
+      var productTypeId = $("#productTypeId").val();
+      $.ajax({
+        url: "${base}/productAttribute/ajaxProductAttribute",
+        dataType: "json",
+        data:{productTypeId: productTypeId},
+        async: false,
+        success: function(json) {
+          var productAttributeTrHtml = "";
+          $.each(json, function(i) {
+              productAttributeTrHtml += '<div class="am-form-group am-form-group-sm productAttributeContentTr">';
+              productAttributeTrHtml += '<label class="am-u-sm-6 am-u-md-4 am-text-right am-form-label">' + json[i].name + '</label>';
+              productAttributeTrHtml += '<div class="am-u-sm-6 am-u-md-8">';
+              if(json[i]["attributeType"] == 0) {
+                productAttributeTrHtml += ('<input type="text" class="am-form-field" name="' + json[i].id + '" value=""' + (json[i].isRequired?' required>':'>'));
+              } else if(json[i]["attributeType"] == 1) {
+                productAttributeTrHtml += '<input type="number" class="am-form-field" name="' + json[i].id + '" value=""' + (json[i].isRequired?' required>':'>');
+              } else if(json[i]["attributeType"] == 2) {//这里限制只让输入字母
+                productAttributeTrHtml += '<input type="text" class="am-form-field js-pattern-alphaint" name="' + json[i].id + '" value="" pattern="^([a-zA-Z]+)$"' + (json[i].isRequired?' required>':'>');
+              } else if(json[i]["attributeType"] == 3) {
+                var productAttributeOption = '<option value=""></option>';
+                for(var key in json[i]["attributeOptionList"]) {
+                  productAttributeOption += ('<option value="' + json[i]["attributeOptionList"][key] + '">' + json[i]["attributeOptionList"][key] + '</option>');
+                }
+                productAttributeTrHtml += '<select name="' + json[i].id + '" data-am-selected="{' + "btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'" + '}"' + (json[i].isRequired?' required>':'>') + productAttributeOption + '</select>'; 
+              } else if(json[i]["attributeType"] == 4) {
+                var productAttributeOption = "";
+                var index = 0;
+                for(var key in json[i]["attributeOptionList"]) {
+                  index++;
+                  productAttributeOption += ('<label class="am-radio-inline"><input type="radio" name="' + json[i].id + '" value="' + json[i]["attributeOptionList"][key] + '"' + ((json[i].isRequired && index==1)?' required>':'>') + json[i]["attributeOptionList"][key] + '</label>');
+                }
+                productAttributeTrHtml += productAttributeOption;
+              } else if(json[i]["attributeType"] == 5) {
+                productAttributeTrHtml += '<div class="am-form-group am-form-icon"><i class="am-icon-calendar"></i><input type="date" name="' + json[i].id + '" class="am-form-field" value=""' + (json[i].isRequired?' required>':'>') + '</div>';
+              }
+              productAttributeTrHtml += '</div></div>'
+          });
+          $("#productTypeTr").after(productAttributeTrHtml);
+        }
+      });
+    });
+    
+    // 商品图片左移
+    $(".opr-img-left").livequery("click", function() {
+        var $productImageLi = $(this).parent().parent().parent().parent();
+        var $productImagePrevLi = $productImageLi.prev("li");
+        if ($productImagePrevLi.length > 0) {
+            $productImagePrevLi.insertAfter($productImageLi);
+        }
+    });
+    
+    // 商品图片右移
+    $(".opr-img-right").livequery("click", function() {
+        var $productImageLi = $(this).parent().parent().parent().parent();
+        var $productImageNextLi = $productImageLi.next("li");
+        if ($productImageNextLi.length > 0) {
+            $productImageNextLi.insertBefore($productImageLi);
+        }
+    });
+    
+    // 商品图片删除
+    $(".opr-img-delete").livequery("click", function() {
+        var $productImageLi = $(this).parent().parent().parent().parent();
+        $productImageLi.remove();
+    });
+    
+    // 添加图片
+    var productImageLiHtmlTemp = '<li><div class="am-thumbnail">'
+        + '<div class="app-product-image-preview am-text-center am-text-warning">暂无图片</div>'
+        + '<ul class="am-thumbnail-caption am-avg-sm-3">'
+        + '<li><button type="button" class="am-btn am-btn-default am-text-warning am-btn-xs am-center opr-img-left"><span class="am-icon-chevron-left"></span></button></li>'
+        + '<li><button type="button" class="am-btn am-btn-default am-text-danger am-btn-xs am-center opr-img-delete" disabled="disabled"><span class="am-icon-trash"></span></button></li>'
+        + '<li><button type="button" class="am-btn am-btn-default am-text-warning am-btn-xs am-center opr-img-right"><span class="am-icon-chevron-right"></span></button></li>'
+        + '</ul><hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" /><ul class="am-thumbnail-caption am-avg-sm-1">'
+        + '<li><div class="am-form-group am-form-file"><button type="button" class="am-btn am-btn-default am-btn-xs am-center"><i class="am-icon-cloud-upload"></i> 上传图片</button><input class="doc-form-file" name="productImages" type="file"></div></li>';
+        + '</ul></div></li>';
+        
+    var index = 0;
+    $("input.doc-form-file").livequery('change', function() {
+      var $this = $(this);
+      var $productImageLi = $this.parent().parent().parent().parent();
+      var $productImagePreview = $productImageLi.find(".app-product-image-preview");
+      var $productImageDeteleBtn = $productImageLi.find(".opr-img-delete");
+      var fileName = $this.val().substr($this.val().lastIndexOf("\\") + 1);
+      if (/(<%for(list in strutil.split(systemConfig.allowedUploadImageExtension,@com.jfinalshop.bean.SystemConfig.EXTENSION_SEPARATOR)){%><%if (!listLP.last){%>.${list}|<%}else{%>.${list}<%}%><%}%>)$/i.test($this.val()) == false) {
+        $.message("您选择的文件格式错误！");
+        return false;
+      }
+      $productImagePreview.html('<img src="' + window.URL.createObjectURL($this[0].files[0]) + '" class="am-img-bdrs"><input type="hidden" name="productImageParameterTypes" value="productImageFile" />');
+      if($productImageDeteleBtn.attr('disabled')){
+          index++;
+          $productImageDeteleBtn.attr('disabled',false);
+          var productImageLiHtml = productImageLiHtmlTemp;
+          productImageLiHtml = productImageLiHtml.replace("productImages", "productImages"+index);
+          $('#file-list').append(productImageLiHtml);
+      }
+    });
+    
+    $('#doc-my-tabs').find('a').on('opened.tabs.amui', function(e) {
+      $('div.am-tab-panel').removeAttr("style");
+    })
+  });
+</script>
+</body>
+</html>

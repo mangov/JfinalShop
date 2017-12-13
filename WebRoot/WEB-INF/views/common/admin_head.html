@@ -1,0 +1,89 @@
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="JFinal shop">
+  <meta name="keywords" content="JFinal,AmazeUI,Shop">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0">
+  <title>${title}</title>
+
+  <!-- Set render engine for 360 browser -->
+  <meta name="renderer" content="webkit">
+
+  <!-- No Baidu Siteapp-->
+  <meta http-equiv="Cache-Control" content="no-siteapp"/>
+
+  <link rel="icon" type="image/png" href="${base}/statics/img/favicon.png">
+
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" sizes="192x192" href="${base}/statics/img/app-icon72x72@2x.png">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="JFinal shop"/>
+  <link rel="apple-touch-icon-precomposed" href="${base}/statics/img/app-icon72x72@2x.png">
+
+  <!-- Tile icon for Win8 (144x144 + tile color) -->
+  <meta name="msapplication-TileImage" content="${base}/statics/img/app-icon72x72@2x.png">
+  <meta name="msapplication-TileColor" content="#0e90d2">
+
+  <link rel="stylesheet" href="${base}/statics/AmazeUI/assets/css/amazeui.min.css">
+  <link rel="stylesheet" href="${base}/statics/AmazeUI/assets/css/admin.css">
+  <link rel="stylesheet" href="${base}/statics/AmazeUI/assets/css/app.css">
+  
+  <!--[if (gte IE 9)|!(IE)]><!-->
+  <script src="${base}/statics/AmazeUI/assets/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <script src="${base}/statics/AmazeUI/assets/js/amazeui.min.js"></script>
+  <script src="${base}/statics/AmazeUI/assets/js/app.js"></script>
+  <script src="${base}/statics/AmazeUI/assets/js/amazeui.modal.js"></script>
+  <%if (has(loadListJS) && loadListJS){%>
+  <script src="${base}/statics/js/list.js"></script>
+  <%}%>
+  <%if (has(loadUE) && loadUE){%>
+  <!-- 百度编辑器 -->
+  <script type="text/javascript" charset="utf-8" src="${base}/statics/UEditor/ueditor.config.js"></script>
+  <script type="text/javascript" charset="utf-8" src="${base}/statics/UEditor/ueditor.all.min.js"></script>
+  <script type="text/javascript" charset="utf-8" src="${base}/statics/UEditor/lang/zh-cn/zh-cn.js"></script>
+  <script type="text/javascript">
+	var ue = UE.getEditor('editor',{
+		initialFrameWidth:"100%" //初始化选项
+		//scaleEnabled:true//scaleEnabled {Boolean} [默认值：false] //是否可以拉伸长高，默认true(当开启时，自动长高失效)
+	  }
+	);
+  </script>
+  <%}%>
+  <%if (has(validatorJS) && validatorJS){%>
+  <script src="${base}/statics/AmazeUI/assets/js/validator.js"></script>
+  <%}%>
+  <%if (has(livequeryJS) && livequeryJS){%>
+  <script src="${base}/statics/js/plugin/jquery.livequery.js"></script>
+  <%}%>
+  <%if (has(formJS) && formJS){%>
+  <!-- TODO:SUN.AO 此处form的导入和amazeui.min.js会有冲突,需要再执行注册脚本 -->
+  <script src="${base}/statics/js/plugin/jquery.form.js"></script>
+  <script>
+  $().ready( function() {
+    AMUI.plugin('mySelected', AMUI.selected);
+    $('[data-am-selected]').mySelected({btnWidth: '100%', maxHeight: '200px', btnSize: 'sm', btnStyle: 'secondary'});
+  });
+  </script>
+  <%}%>
+  <%if (has(metadataJS) && metadataJS){%>
+  <script src="${base}/statics/js/plugin/jquery.metadata.js"></script>
+  <%}%>
+  <script src="${base}/statics/js/base.js"></script>
+  <%if (has(lSelectJS) && lSelectJS){%>
+  <script src="${base}/statics/js/jquery.lSelect.js"></script>
+  <%}%>
+  <script>
+  <!-- iPhone真机上safari访问时滚动效果会失效  -->
+  $().ready(function() {
+    //console.info(navigator.userAgent);
+    if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) { //匹配iPhone
+      var scrollableDivWidth = $(".am-scrollable-horizontal").width();//原始宽度
+      $(".am-scrollable-horizontal").width(screen.width > scrollableDivWidth ? scrollableDivWidth : screen.width);//与屏幕宽度对比，设置一个比较小的宽度
+      //console.info("iPhone");
+    }
+  });
+  </script>

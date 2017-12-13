@@ -1,0 +1,55 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '发送消息', validatorJS: true}){}%>
+</head>
+<body>
+<!-- content start -->
+<div class="admin-content">
+  <div class="admin-content-body">
+    <div class="am-cf app-padding-title">
+      <div class="am-fl am-cf">
+        <strong class="am-text-primary am-text-lg">系统管理</strong> / <small>发送消息</small>
+      </div>
+    </div>
+    
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+    
+    <form class="validator-form" action="${base}/message/save" method="post">
+    <input type="hidden" name="message.id" value="${message.id!}" />
+    <div class="am-form am-margin am-form-horizontal">
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">收件人</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="text" class="am-form-field" name="toMemberUsername" value="${toMemberUsername!}" required>
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${nameMessages!}</div>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">标题</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="text" class="am-form-field" name="message.title" value="${message.title!}" required>
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${titleMessages!}</div>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">内容</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <textarea rows="10" class="am-form-field" name="message.content" required>${message.content!}</textarea>
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${contentMessages!}</div>
+        </div>
+      </div>
+      <hr data-am-widget="divider" class="am-divider am-divider-dashed" />
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-8 am-u-sm-offset-4 am-u-md-9 am-u-md-offset-3">
+          <button type="submit" class="am-btn am-btn-primary"><span class="am-icon-save">  发  送</span></button>
+          <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div>
+</div>
+<!-- content end -->
+</body>
+</html>

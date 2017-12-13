@@ -1,0 +1,152 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '添加/编辑商品属性', validatorJS: true, livequeryJS: true}){}%>
+<%var isAdd = false;
+  var isEdit = false;
+  if(isEmpty(productAttribute.id)){
+    isAdd = true;
+  }else{  
+    isEdit = true;
+  }%>
+</head>
+<body>
+<!-- content start -->
+<div class="admin-content">
+  <div class="admin-content-body">
+    <div class="am-cf app-padding-title">
+      <div class="am-fl am-cf">
+        <strong class="am-text-primary am-text-lg">商品管理</strong> / <small><%if(isAdd){%>添加商品属性<%}else{%>编辑商品属性<%}%></small>
+      </div>
+    </div>
+  
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+    
+    <form class="validator-form" action="<%if (isAdd){%>${base}/productAttribute/save<%}else{%>${base}/productAttribute/update<%}%>" method="post">
+    <input type="hidden" name="productAttribute.id" value="${productAttribute.id!}" />
+    <div class="am-form am-margin am-form-horizontal">
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">所属商品类型</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <select name="productAttribute.productType_id" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm', btnStyle: 'secondary'}" required>
+            <%for(list in allProductType){%>
+            <option value="${list.id}"<%if (list.id == productTypeId! || list.id == productAttribute.productType.id!){%> selected <%}%>>${list.name}</option>
+            <%}%>
+          </select>
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${productTypeIdMessages!}</div>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">商品属性名称</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="text" class="am-form-field" name="productAttribute.name" value="${productAttribute.name!}" required />
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${nameMessages!}</div>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm" id="productAttributeTypeTr">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">商品属性类型</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <select name="attributeType" id="productAttributeType" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm', btnStyle: 'secondary'}" required>
+            <%for(list in allAttributeType){%>
+            <option value="${list}"<%if (isEdit && list == productAttribute.attributeType!){%> selected <%}%>>
+              ${i18n("AttributeType."+list)}
+            </option>  
+            <%}%>
+          </select>
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${attributeTypeMessages!}</div>
+        </div>
+      </div>
+	  <%if (productAttribute.attributeType! == "select" || productAttribute.attributeType! == "checkbox"){%>
+	  <%for(list in productAttribute.attributeOptionList){%>
+      <div class="am-form-group am-form-group-sm attributeOption">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">选项内容</label>
+        <div class="am-u-sm-4 am-u-md-6">
+          <input type="text" class="am-form-field" name="attributeOptionList" value="${list!}" required />
+        </div>
+        <div class="am-u-sm-4 am-u-md-3">
+          <button type="button" class="am-btn am-btn-default am-btn-sm addImage"><span class="am-icon-plus"></span></button>
+          <button type="button" class="am-btn am-btn-default am-btn-sm deleteImage"><span class="am-icon-trash-o"></span></button>
+        </div>
+      </div>
+      <%}}%>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">排序</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="number" class="am-form-field" name="productAttribute.orderList" value="${productAttribute.orderList!50}" placeholder="只允许输入零或正整数" min="0" max="1000" required />
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${orderListMessages!}</div>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">是否必填</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <label class="am-radio-inline">
+            <input type="radio" name="productAttribute.isRequired" value="true"<%if (productAttribute.isRequired! == true){%> checked<%}%> required> 是
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="productAttribute.isRequired" value="false"<%if (isAdd || productAttribute.isRequired == false){%> checked<%}%>> 否
+          </label>
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${isRequiredMessages!}</div>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">是否启用</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <label class="am-radio-inline">
+            <input type="radio" name="productAttribute.isEnabled" value="true"<%if (isAdd || productAttribute.isEnabled == true){%> checked<%}%> required> 是
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="productAttribute.isEnabled" value="false"<%if (productAttribute.isEnabled! == false){%> checked<%}%>> 否
+          </label>
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${isEnabledMessages!}</div>
+        </div>
+      </div>
+      <hr data-am-widget="divider" class="am-divider am-divider-dashed" />
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-8 am-u-sm-offset-4 am-u-md-9 am-u-md-offset-3">
+          <button type="submit" class="am-btn am-btn-primary"><span class="am-icon-save">  保  存</span></button>
+          <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+        </div>
+      </div>
+    </div>
+	</form>
+  </div>
+</div>
+<!-- content end -->
+<script>
+  $().ready(function() {
+    //减少选项内容输入框
+    $(".deleteImage").livequery("click", function() {
+      var $itemDiv = $(this).parent().parent();
+      if($(".attributeOption").length > 1) {
+        $itemDiv.remove();
+      } else {
+        Modal.alert("请至少保留一个选项!");
+      }
+    });
+    
+    var attributeOptionTrHtml = '<div class="am-form-group am-form-group-sm attributeOption">'
+        + '<label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">选项内容</label>'
+        + '<div class="am-u-sm-4 am-u-md-6">'
+        + '<input type="text" class="am-form-field" name="attributeOptionList" value="" required>'  
+        + '</div><div class="am-u-sm-4 am-u-md-3">'
+        + '<button type="button" class="am-btn am-btn-default am-btn-sm addImage"><span class="am-icon-plus"></span></button>'
+        + '<button type="button" class="am-btn am-btn-default am-btn-sm deleteImage"><span class="am-icon-trash-o"></span></button>'
+        + '</div></div>';
+    
+    //增加选项内容输入框
+    $(".addImage").livequery("click", function() {
+      var $itemDiv = $(this).parent().parent();
+      $itemDiv.after(attributeOptionTrHtml);
+    });
+    
+    $("#productAttributeType").livequery("change", function() {
+        $(".attributeOption").remove();
+        if($(this).val() == "select" || $(this).val() == "checkbox") {
+            $(this).parent().parent().after(attributeOptionTrHtml);
+        }
+    });
+    
+  });
+</script>
+</body>
+</html>

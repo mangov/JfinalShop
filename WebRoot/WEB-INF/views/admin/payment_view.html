@@ -1,0 +1,53 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '查看收款单'}){}%>
+</head>
+<body>
+<!-- content start -->
+<div class="admin-content">
+  <div class="admin-content-body">
+    <div class="am-cf app-padding-title">
+      <div class="am-fl am-cf">
+        <strong class="am-text-primary am-text-lg">订单管理</strong> / <small>查看收款单</small>
+      </div>
+    </div>
+
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+    
+	<div class="am-g am-u-sm-12 am-margin">
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-kai am-padding-horizontal-0">支付编号</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p>&nbsp;${payment.paymentSn!}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-kai am-padding-horizontal-0">订单编号</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p>&nbsp;${payment.order.orderSn!}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-kai am-padding-horizontal-0">支付类型</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p>&nbsp;${i18n("PaymentType." + payment.paymentType)}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-kai am-padding-horizontal-0">支付方式</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p>&nbsp;${payment.paymentConfigName}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-kai am-padding-horizontal-0">收款银行名称</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p>&nbsp;${payment.bankName}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-kai am-padding-horizontal-0">收款银行账号</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p>&nbsp;${payment.bankAccount}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-kai am-padding-horizontal-0">支付金额</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p class="am-text-danger">&nbsp;${payment.totalAmount,orderUnitCurrencyFormat}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-kai am-padding-horizontal-0">支付手续费</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p class="am-text-danger">&nbsp;${payment.paymentFee,orderUnitCurrencyFormat}</p></div>
+	  
+      <hr data-am-widget="divider" class="am-divider am-divider-dotted" />
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-kai am-padding-horizontal-0">付款人</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p>&nbsp;${payment.payer}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-kai am-padding-horizontal-0">支付状态</div>
+	  <div class="am-u-sm-8 am-u-md-4"><p class="am-text-success">&nbsp;${i18n("PaymentStatus." + payment.paymentStatus)}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-kai am-padding-horizontal-0">操作员</div>
+	  <div class="am-u-sm-8 am-u-md-10"><p>&nbsp;${payment.operator}</p></div>
+	  <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-kai am-padding-horizontal-0">备注</div>
+	  <div class="am-u-sm-8 am-u-md-10"><p>&nbsp;${payment.memo}</p></div>
+	</div>
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+    <div class="am-margin">
+      <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

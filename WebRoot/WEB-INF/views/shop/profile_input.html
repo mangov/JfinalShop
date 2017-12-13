@@ -1,0 +1,112 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+<% include("/common/shop_head.html",{noFormJS:true, lSelectJS: true}){}%>
+</head>
+<body>
+<%include("/shop/header.html"){}%>
+<div class="am-cf shop-main">
+  <!-- sidebar start -->
+  <%include("/shop/sidebar.html"){}%>
+  <!-- sidebar end -->
+
+  <!-- content start -->
+  <div class="shop-content">
+    <div class="shop-content-body">
+      <ol class="am-breadcrumb am-margin-left am-margin-bottom-0">
+        <li><span class="am-icon-info-circle am-icon-fw"> </span>个人资料</li>
+        <li class="am-active">个人信息</li>
+      </ol>
+      <form id="inputForm" class="validate" action="${base}/profile/update" method="post" data-am-validator>
+      <div class="am-panel am-panel-default am-margin-horizontal-sm am-padding-top">
+        <div class="am-panel-bd am-g am-padding-0 am-form am-form-horizontal">
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-3 am-text-right am-form-label">E-mail</label>
+            <div class="am-u-sm-8 am-u-end">
+              <input type="email" class="am-form-field" name="member.email" value="${member.email!}" placeholder="请输入E-mail地址!"  required>
+            </div>
+          </div>
+		  <%for(list in enabledMemberAttributeList){%>
+          <div class="am-form-group am-form-group-sm">
+            <label class="am-u-sm-3 am-text-right am-form-label">${list.name}</label>
+            <div class="am-u-sm-8 am-u-end">
+              <%if (list.attributeType == "text"){%>
+              <input type="text" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+              <%}else if (list.attributeType == "number"){%>
+              <input type="number" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+              <%}else if (list.attributeType == "alphaint"){%>
+              <input type="text" class="am-form-field js-pattern-alphaint" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+              <%}else if (list.attributeType == "email"){%>
+              <input type="email" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+              <%}else if (list.attributeType == "select"){%>
+              <select name="${list.id}" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm'}"<%if (list.isRequired){%> required<%}%>>
+                <option value=""></option>
+                <%for(attributeOptionList in list.attributeOptionList){%>
+                <option value="${attributeOptionList}"<%if (member.memberAttributeMap[list.id]! == attributeOptionList){%> selected<%}%>>${attributeOptionList}</option>
+                <%}%>
+              </select>
+              <%}else if (list.attributeType == "checkbox"){%>
+              <%for(attributeOptionList in list.attributeOptionList){%>
+              <label class="am-checkbox-inline">
+                <input type="checkbox" name="${list.id}" value="${attributeOptionList}"<%if (strutil.contain(product.productAttributeMap[list.id],attributeOptionList)){%> checked<%}%><%if (list.isRequired && listLP.index==1){%> required<%}%>>${attributeOptionList}
+              </label>
+              <%}%>
+              <%}else if (list.attributeType == "name"){%>
+              <input type="text" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+              <%}else if (list.attributeType == "gender"){%>
+              <label class="am-radio-inline">
+                <input type="radio" name="${list.id}" value="male"<%if (member.memberAttributeMap[list.id]! == "male"){%> checked<%}%><%if (list.isRequired){%> required<%}%>> ${i18n("Gender.male")}
+              </label>
+              <label class="am-radio-inline">
+                <input type="radio" name="${list.id}" value="female"<%if (member.memberAttributeMap[list.id]! == "female"){%> checked<%}%>> ${i18n("Gender.female")}
+              </label>
+              <%}else if (list.attributeType == "date"){%>
+              <div class="am-form-group am-form-icon">
+                <i class="am-icon-calendar"></i>
+                <input type="date" class="am-form-field" name="${list.id}" value="${product.productAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+              </div>
+              <%}else if (list.attributeType == "area"){%> 
+              <input type="hidden" name="${list.id}" class="areaSelect" value="${member.memberAttributeMap[list.id]!}" <%if (list.isRequired){%> required<%}%>>
+              <%}else if (list.attributeType == "address"){%>
+              <input type="text" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+              <%}else if (list.attributeType == "zipCode"){%>
+              <input type="text" class="am-form-field js-pattern-zipCode" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+              <%}else if (list.attributeType == "mobile"){%>
+              <input type="text" class="am-form-field js-pattern-mobile" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+              <%}else if (list.attributeType == "phone"){%>
+              <input type="text" class="am-form-field js-pattern-phone" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+              <%}else if (list.attributeType == "qq"){%>
+              <input type="number" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+              <%}else if (list.attributeType == "msn"){%>
+              <input type="text" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+              <%}else if (list.attributeType == "wangwang"){%>
+              <input type="text" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+              <%}else if (list.attributeType == "skype"){%>
+              <input type="text" class="am-form-field" name="${list.id}" value="${member.memberAttributeMap[list.id]!}"<%if (list.isRequired){%> required<%}%>>
+              <%}%>
+            </div>
+          </div>
+          <%}%>
+          <hr data-am-widget="divider" class="am-divider am-divider-dashed" />
+          <div class="am-form-group am-form-group-sm">
+            <div class="am-u-sm-8 am-u-sm-offset-3">
+              <button type="submit" class="am-btn am-btn-primary"><span class="am-icon-save"> 保 存</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </form>
+    </div>
+    <%include("/shop/footer.html"){}%>
+  </div>
+  <!-- content end -->
+</div>
+<script type="text/javascript">
+$().ready( function() {
+    $(".areaSelect").lSelect({
+        url: "${base}/area/ajaxChildrenArea"// Json数据获取url
+    });
+});
+</script>
+</body>
+</html>

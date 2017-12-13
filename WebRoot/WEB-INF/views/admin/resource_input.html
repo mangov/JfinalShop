@@ -1,0 +1,68 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '添加/编辑资源', validatorJS: true}){}%>
+<%var isAdd = false;
+  var isEdit = false;
+  if(isEmpty(resource.id)){
+	isAdd = true;
+  }else{	
+	isEdit = true;
+  }%>
+</head>
+<body>
+<!-- content start -->
+<div class="admin-content">
+  <div class="admin-content-body">
+    <div class="am-cf app-padding-title">
+      <div class="am-fl am-cf">
+        <strong class="am-text-primary am-text-lg">系统管理</strong> / <small><%if(isAdd){%>添加资源<%}else{%>编辑资源<%}%></small>
+      </div>
+    </div>
+    
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+    
+    <form class="validator-form" action="<%if (isAdd){%>${base}/resource/save<%}else{%>${base}/resource/update<%}%>" method="post">
+    <input type="hidden" name="resource.id" value="${resource.id!}" />
+    <div class="am-form am-margin am-form-horizontal">
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">资源名称</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="text" class="am-form-field" name="resource.name" value="${resource.name!}" required />
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${nameMessages!}</div>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">资源值</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="text" class="am-form-field" name="resource.value" value="${resource.value!}" required />
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${valueMessages!}</div>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">描述</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="text" class="am-form-field" name="resource.description" value="${resource.description!}">
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">排序</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="number" class="am-form-field" name="resource.orderList" value="${resource.orderList!50}" placeholder="只允许输入零或正整数" min="0" max="1000" required />
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${orderListMessages!}</div>
+        </div>
+      </div>
+      <hr data-am-widget="divider" class="am-divider am-divider-dashed" />
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-8 am-u-sm-offset-4 am-u-md-9 am-u-md-offset-3">
+          <button type="submit" class="am-btn am-btn-primary"><span class="am-icon-save">  保  存</span></button>
+          <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div>
+</div>
+<!-- content end -->
+</body>
+</html>

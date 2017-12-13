@@ -1,0 +1,71 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+<% include("/common/shop_head.html"){}%>
+<script>
+$(function() {
+  //刷新验证码图片(登录)
+  function loginCaptchaImageRefresh() {
+    $("#loginCaptchaImage").attr("src", "${base}/captcha?timestamp=" + (new Date()).valueOf());
+  }
+  	
+  // 点击刷新验证码图片
+  $("#loginCaptchaImage").click( function() {
+	  loginCaptchaImageRefresh();
+  });
+  
+  loginCaptchaImageRefresh();
+});
+</script>
+</head>
+<body>
+  <!-- content start -->
+  <div class="shop-content">
+    <div class="shop-content-body">
+      <div class="am-panel am-panel-default">
+        <div class="am-panel-hd am-text-center">会员登录</div>
+        <div class="am-panel-bd">
+          <form id="loginForm" class="am-form am-form-horizontal" action="${base}/shop/member/login"  method="post">
+          <div class="am-form-group">
+            <label for="doc-ipt-3" class="am-u-sm-3 am-form-label">用户名</label>
+            <div class="am-u-sm-9">
+              <input type="text" name="member.username" required>
+            </div>
+          </div>
+          <div class="am-form-group">
+            <label for="doc-ipt-pwd-2" class="am-u-sm-3 am-form-label">密码</label>
+            <div class="am-u-sm-9">
+              <input type="password" id="doc-ipt-pwd-2" name="member.password" required>
+            </div>
+          </div>
+          <div class="am-form-group">
+            <label for="captcha" class="am-u-sm-3 am-form-label">验证码</label>
+            <div class="am-u-sm-5">
+              <input type="text" name="captchaToken" placeholder="验证码 →" value="" required>
+            </div>
+            <div class="am-u-sm-4 am-padding-left-0">
+              <img id="loginCaptchaImage" src="${base}/captcha" alt="换一张" />
+            </div>
+          </div>
+  
+          <div class="am-form-group">
+            <div class="am-u-sm-offset-3 am-u-sm-9 am-text-xs">
+              <a href="${base}/shop/member/passwordRecover">忘记了密码? 点击找回!</a>
+            </div>
+          </div>
+  
+          <div class="am-form-group">
+            <div class="am-u-sm-9 am-u-sm-offset-3">
+              <button type="submit" class="am-btn am-btn-default">登 录</button>
+            </div>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <%include("/shop/footer.html"){}%>
+  </div>
+  <!-- content end -->
+</body>
+</html>
+    

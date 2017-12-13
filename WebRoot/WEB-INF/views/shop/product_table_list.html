@@ -1,0 +1,146 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+<% include("/common/shop_head.html", {productJS: true}){}%>
+<script>
+  $().ready( function() {
+    AMUI.plugin('mySelected', AMUI.selected);
+    $('[data-am-selected]').mySelected({btnWidth: '70%', maxHeight: '200px', btnSize: 'xs'});
+  });
+</script>
+</head>
+<body>
+<%include("/shop/header.html"){}%>
+<div class="am-cf shop-main">
+  <!-- content start -->
+  <div class="shop-content">
+    <div class="shop-content-body">
+      <div class="am-g">
+        <div class="am-u-md-2 am-hide-sm-only am-text-xs am-padding-right-0">
+          <table class="am-table am-table-bordered am-table-compact am-margin-top-xs">
+          <thead>
+            <tr>
+              <th class="am-danger">热销排行</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%for(list in hotProductList!){%>
+            <tr>
+              <td>
+                <span class="am-badge am-badge-danger">${listLP.index}</span>
+                <%if (strutil.length(list.name) < 15){%>
+                <a href="${base}${list.htmlFilePath}" title="${list.name}">${list.name}</a>
+                <%}else{%>
+                <a href="${base}${list.htmlFilePath}" title="${list.name}">${strutil.subStringTo(list.name,0,11)}...</a>
+                <%}%>
+              </td>
+            </tr>
+            <%if (listLP.index == 9){%>
+            <%break;%>
+            <%}%>
+            <%}%>
+          </tbody>
+          </table>
+          <table class="am-table am-table-bordered am-table-compact am-margin-top-xs">
+          <thead>
+            <tr>
+              <th class="am-primary">浏览记录</th>
+            </tr>
+          </thead>
+          <tbody id="productHistoryListDetail">
+          </tbody>
+          </table>
+        </div>
+        <div class="am-u-sm-12 am-u-md-10">
+          <form id="productListForm" action="${base}/shop/product/list" method="get">
+          <input type="hidden" name="id" value="${productCategory.id}" />
+          <input type="hidden" id="viewType" name="viewType" value="tableType" />
+          <input type="hidden" id="pageNumber" name="pageNumber" value="${pager.pageNumber}" />
+          <div class="am-g am-margin-vertical-xs">
+            <div class="am-u-sm-12 am-u-md-7">
+              <ol class="am-breadcrumb am-margin-bottom-0">
+                <li><span class="am-icon-home"> </span>首页</li>
+                <%for(list in pathList){%>
+                <li><a href="${base}/shop/product/list?id=${list.id}">${list.name}</a></li>
+                <%}%>
+              </ol>
+            </div>
+            <div class="am-u-md-5 am-hide-sm-only">
+              <ol class="am-breadcrumb am-margin-bottom-0">
+                <li>共计: ${pager.totalRow} 款商品</li>
+              </ol>
+            </div>
+          </div>
+          
+          <div class="am-panel am-panel-default">
+            <div class="am-panel-hd">
+            <div class="am-g am-text-middle">
+              <div class="am-u-sm-6 am-u-md-5 am-u-lg-3">
+                <div class="am-btn-group" data-am-button>
+                  <label class="am-btn am-btn-default am-btn-xs">
+                    <input type="radio" checked><span class="am-icon-list am-icon-fw"> </span>列表
+                  </label>
+                  <label class="am-btn am-btn-default am-btn-xs" id="pictureType">
+                    <input type="radio"><span class="am-icon-th am-icon-fw"> </span>图片
+                  </label>
+                </div>
+              </div>
+              <div class="am-u-sm-6 am-u-md-7 am-u-lg-3">
+                <select id="orderType" name="orderType" data-am-selected>
+                  <option value="default"<%if (orderType! == "default"){%> selected="selected"<%}%>>默认排序</option>
+                  <option value="priceAsc"<%if (orderType! == "priceAsc"){%> selected="selected"<%}%>>价格从低到高</option>
+                  <option value="priceDesc"<%if (orderType! == "priceDesc"){%> selected="selected"<%}%>>价格从高到低</option>
+                  <option value="dateAsc"<%if (orderType! == "dateAsc"){%> selected="selected"<%}%>>按上价时间排序</option>
+                </select>
+              </div>
+              <div class="am-u-sm-12 am-u-md-12 am-hide-lg-only am-margin-xs"></div>
+              <div class="am-u-sm-6 am-u-md-5 am-u-lg-3 am-text-right am-text-sm am-padding-right-0 am-margin-top-xs">显示数量</div>
+              <div class="am-u-sm-6 am-u-md-7 am-u-lg-3">
+                <select name="pageSize" id="pageSize" data-am-selected>
+                  <option value="12" <%if (pageSize! == 12){%>selected="selected" <%}%>>12</option>
+                  <option value="24" <%if (pageSize! == 24){%>selected="selected" <%}%>>24</option>
+                  <option value="60" <%if (pageSize! == 60){%>selected="selected" <%}%>>60</option>
+                  <option value="120" <%if (pageSize! == 120){%>selected="selected" <%}%>>120</option>
+                </select>
+              </div>
+              </div>
+            </div>
+            <div class="am-panel-bd">
+              <ul class="am-list am-text-xs">
+                <%for(list in pager.list){%>
+                <li>
+                  <div class="am-cf am-margin-vertical-xs">
+                    <a href="${base}${list.htmlFilePath}" class="am-text-top am-fl">
+                      <p class="am-align-left">
+                        <img class="am-thumbnail am-radius am-margin-bottom-0 am-fl" src="${base}${list.productImageList[0].thumbnailProductImagePath!systemConfig.defaultThumbnailProductImagePath}" />
+                      </p>
+                      ${list.name}
+                    </a>
+                    <div class="am-fr">
+                      <strong class="am-text-warning">${list.price,priceCurrencyFormat}</strong> &nbsp;&nbsp; <del>${list.marketPrice,priceCurrencyFormat}</del>
+                      <br />
+                      <div class="am-btn-group am-btn-group-xs">
+                        <button type="button" class="addCartItem {id: '${list.id}'} am-btn am-btn-default am-padding-xs"<%if (list.isOutOfStock){%> disabled><span class="am-icon-stop am-icon-fw"> </span> 缺货<%}else{%>><span class="am-icon-cart-plus am-icon-fw"> </span> 购买<%}%> </button>
+                        <button type="button" class="addFavorite {id: '${list.id}'} am-btn am-btn-default am-padding-xs"><span class="am-icon-star am-icon-fw"> </span> 收藏 </button>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <%}%>
+                <%if (pager.list.~size == 0){%>
+                <li class="am-text-xs am-text-danger">没有找到相关商品！</li>
+                <%}%>
+              </ul>
+              <%include("/shop/pager.html", {"pageNumber":pager.pageNumber,"pageSize":pager.pageSize,"pageCount":pager.totalPage,"property":"","keyword":"无","orderBy":"","orderType":"","baseUrl":"/shop/product/list"}) {}%>
+            </div>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <%include("/shop/footer.html"){}%>
+  </div>
+  <!-- content end -->
+</div>
+</body>
+</html>

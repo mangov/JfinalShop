@@ -1,0 +1,650 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="keywords" content="JFinalShop商城" />
+  <meta name="description" content="JFinalShop是使用JFinal、AmazeUI等开发的开源网店系统。" />
+  <!-- minimum-scale=1.0, maximum-scale=1.0 不加这两个在iPhone浏览器下点击缩小了的输入框会使整个页面变大 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+  <title>JFinalShop商城</title>
+
+  <!-- Set render engine for 360 browser -->
+  <meta name="renderer" content="webkit">
+
+  <!-- No Baidu Siteapp-->
+  <meta http-equiv="Cache-Control" content="no-siteapp"/>
+
+  <link rel="icon" type="image/png" href="/statics/img/favicon.png">
+
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" sizes="192x192" href="/statics/img/app-icon72x72@2x.png">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="JFinal shop"/>
+  <link rel="apple-touch-icon-precomposed" href="/statics/img/app-icon72x72@2x.png">
+
+  <!-- Tile icon for Win8 (144x144 + tile color) -->
+  <meta name="msapplication-TileImage" content="/statics/img/app-icon72x72@2x.png">
+  <meta name="msapplication-TileColor" content="#0e90d2">
+
+  <link rel="stylesheet" href="/statics/AmazeUI/assets/css/amazeui.min.css">
+  <link rel="stylesheet" href="/statics/AmazeUI/assets/css/shop.css">
+  
+  <!--[if (gte IE 9)|!(IE)]><!-->
+  <script src="/statics/AmazeUI/assets/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <script src="/statics/AmazeUI/assets/js/amazeui.min.js"></script>
+  <script src="/statics/AmazeUI/assets/js/amazeui.modal.js"></script>
+  <script src="/statics/js/base.js"></script>
+  <script src="/statics/AmazeUI/assets/js/validator.js"></script>
+  
+  <script src="/statics/js/plugin/jquery.cookie.js"></script>
+  <script src="/statics/js/plugin/jquery.form.js"></script>
+  <script src="/statics/js/plugin/jquery.metadata.js"></script>
+  <script>
+$().ready( function() {
+  $hits = $("#hits");
+  // 统计文章点击数
+  $.ajax({
+	url: "/shop/article/ajaxCounter?id=402881882ba8753a012ba8a62fd7000c",
+	dataType: "json",
+	async: false,
+	success: function(data) {
+	  if (data.status == "success") {
+		$hits.text(data.hits);
+	  }
+	}
+  });
+});
+</script>
+</head>
+<body>
+<script>
+$(function() {
+  
+  // 刷新header登录、注册信息
+  $.flushHeaderInfo = function () {
+    var $headerShowLoginWindow = $("#headerShowLoginWindow");
+	var $headerShowRegisterWindow = $("#headerShowRegisterWindow");
+	var $headerLoginMemberUsername = $("#headerLoginMemberUsername");
+	var $headerMemberCenter = $("#headerMemberCenter");
+	var $headerLogout = $("#headerLogout");
+	if($.cookie("loginMemberUsername") != null) {
+	  $headerLoginMemberUsername.text($.cookie("loginMemberUsername"));
+	  $headerMemberCenter.show();
+	  $headerLogout.show();
+	  $headerShowLoginWindow.hide();
+	  $headerShowRegisterWindow.hide();
+	} else {
+	  $headerLoginMemberUsername.text("");
+	  $headerShowLoginWindow.show();
+	  $headerShowRegisterWindow.show();
+	  $headerMemberCenter.hide();
+	  $headerLogout.hide();
+	}
+  }
+	
+  $.flushHeaderInfo();
+  
+  //获取注册信息
+  $.getAgreement = function () {
+    if ($.trim($("#agreementContent").html()) == "") {
+      $.ajax({
+  	    beforeSend: function(data) {
+  	      $("#agreementContent").html('加载中...');
+  	    },
+  	    dataType: "text",
+  	    url: "/shop/member/agreement",
+  	    success: function(data){
+  		  $("#agreementContent").html(data);
+  	    }
+  	  });
+    }
+  }
+  
+  $.getAgreement();
+  
+  // 刷新验证码图片(登录)
+  function loginWindowCaptchaImageRefresh() {
+    $("#loginWindowCaptchaImage").attr("src", "/captcha?timestamp=" + (new Date()).valueOf() + "&width=85&height=33&fontsize=27");
+  }
+	
+  // 点击刷新验证码图片
+  $("#loginWindowCaptchaImage").click( function() {
+    loginWindowCaptchaImageRefresh();
+  });
+  
+  //登录
+  $("#headerShowLoginWindow").click( function() {
+    loginWindowCaptchaImageRefresh();
+    $("#member-login-modal").modal();
+  });
+  
+  // 刷新验证码图片(注册)
+  function registerWindowCaptchaImageRefresh() {
+    $("#registerWindowCaptchaImage").attr("src", "/captcha?timestamp=" + (new Date()).valueOf() + "&width=85&height=33&fontsize=27");
+  }
+	
+  // 点击刷新验证码图片
+  $("#registerWindowCaptchaImage").click( function() {
+	registerWindowCaptchaImageRefresh();
+  });
+  
+  //注册
+  $("#headerShowRegisterWindow").click( function() {
+	  registerWindowCaptchaImageRefresh();
+      $("#member-register-modal").modal();
+  });
+  
+  // 登录表单提交
+  $('#loginWindowForm').on('submit', function() {
+	$("#loginWindowFormBtn").button('loading');
+    $(this).ajaxSubmit({
+      success: function(data) {
+        if (data.status == "success") {
+		  Modal.alert(data.message);
+		  $.flushHeaderInfo();
+		  $(this).resetForm();
+		  $("#member-login-modal").modal('close');
+		  var redirectionUrl = $.cookie("redirectionUrl");
+		  if(redirectionUrl != null && redirectionUrl != "") {
+			location.href = redirectionUrl;
+		  }
+		} else if (data.status == "error") {
+		  loginWindowCaptchaImageRefresh();
+		  $("#loginWindowCaptcha").val("");
+		  Modal.alert(data.message);
+		} else {
+		  Modal.alert(data);
+		}
+        $("#loginWindowFormBtn").button('reset');
+      }
+    });
+    return false; // 阻止表单自动提交事件
+  });
+  
+  //注册表单提交
+  $('#registerWindowForm').on('submit', function() {
+	$("#registerWindowSubmitBtn").button('loading');
+    $(this).ajaxSubmit({
+      success: function(data) {
+        if (data.status == "success") {
+		  Modal.alert(data.message);
+		  $.flushHeaderInfo();
+		  $(this).resetForm();
+		  $("#member-register-modal").modal('close');
+		  var redirectionUrl = $.cookie("redirectionUrl");
+		  if(redirectionUrl != null && redirectionUrl != "") {
+			location.href = redirectionUrl;
+		  }
+		} else if (data.status == "error") {
+		  loginWindowCaptchaImageRefresh();
+		  $("#loginWindowCaptcha").val("");
+		  Modal.alert(data.message);
+		} else {
+		  Modal.alert(data);
+		}
+        $("#registerWindowSubmitBtn").button('reset');
+      }
+    });
+    return false; // 阻止表单自动提交事件
+  });
+ 
+});
+</script>
+
+<!-- 会员登录 start -->
+
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="member-login-modal">
+
+  <div class="am-modal-dialog am-panel am-panel-default">
+
+    <div class="am-modal-hd am-panel-hd">
+
+      会员登录<a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+
+    </div>
+
+    <div class="am-modal-bd am-panel-bd am-padding-0">
+
+      <form id="loginWindowForm" class="am-form am-form-horizontal am-margin-top" action="/shop/member/ajaxLogin" method="post">
+
+      <div class="am-form-group">
+
+        <div class="am-u-sm-12 am-input-group am-input-group-sm">
+
+          <span class="am-input-group-label"><i class="am-icon-user am-icon-fw"></i></span>
+
+          <input type="text" class="am-form-field" id="loginUsername" name="member.username" placeholder="用户名" required>
+
+        </div>
+
+      </div>
+
+      <div class="am-form-group am-form-group-sm">
+
+        <div class="am-u-sm-12 am-input-group am-input-group-sm">
+
+          <span class="am-input-group-label"><i class="am-icon-lock am-icon-fw"></i></span>
+
+          <input type="password" class="am-form-field" id="loginPassword" name="member.password" placeholder="密码" required>
+
+        </div>
+
+      </div>
+
+      <div class="am-form-group am-margin-bottom-xs">
+
+        <div class="am-u-sm-7 am-input-group am-input-group-sm">
+
+          <span class="am-input-group-label"><i class="am-icon-barcode am-icon-fw"></i></span>
+
+          <input type="text" class="am-form-field" id="loginCaptcha" name="captchaToken" placeholder="验证码" required>
+
+        </div>
+
+        <div class="am-u-sm-5 am-padding-left-0">
+
+          <img id="loginWindowCaptchaImage" class="am-fl" src="/captcha?width=85&height=33&fontsize=27" alt="换一张" />
+
+        </div>
+
+      </div>
+
+      <div class="am-form-group am-margin-bottom-xs">
+
+        <div class="am-u-sm-12 am-u-md-12 am-text-right">
+
+          <a class="am-badge am-badge-warning" href="/shop/member/passwordRecover">忘记密码 ^_^? </a>
+
+        </div>
+
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-12 am-input-group am-input-group-sm">
+          <button id="loginWindowFormBtn" type="submit" class="am-btn am-btn-primary am-btn-block" data-am-loading="{loadingText: '努力登录中...'}">登录</button>
+        </div>
+      </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- 会员登录 end -->
+<!-- 会员注册 start -->
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="member-register-modal">
+  <div class="am-modal-dialog am-panel am-panel-default">
+    <div class="am-modal-hd am-panel-hd">
+      会员注册<a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+    </div>
+    <div class="am-modal-bd am-panel-bd am-padding-0">
+      <form id="registerWindowForm" class="am-form am-form-horizontal am-margin-top" action="/shop/member/ajaxRegister" method="post">
+      <div class="am-form-group">
+        <div class="am-u-sm-12 am-input-group am-input-group-sm">
+          <span class="am-input-group-label"><i class="am-icon-user am-icon-fw"></i></span>
+          <input type="text" class="am-form-field" id="loginUsername" name="member.username" placeholder="用户名：中文、英文、数字和下划线" required>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-12 am-input-group am-input-group-sm">
+          <span class="am-input-group-label"><i class="am-icon-lock am-icon-fw"></i></span>
+          <input type="password" class="am-form-field" id="registerWindowPassword" name="member.password" placeholder="密码：密码长度不能小于4" required>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-12 am-input-group am-input-group-sm">
+          <span class="am-input-group-label"><i class="am-icon-lock am-icon-fw"></i></span>
+          <input type="password" class="am-form-field" name="rePassword" placeholder="重复密码" data-equal-to="#registerWindowPassword" required>
+        </div>
+      </div>
+      <div class="am-form-group">
+        <div class="am-u-sm-12 am-input-group am-input-group-sm">
+          <span class="am-input-group-label"><i class="am-icon-envelope-square am-icon-fw"></i></span>
+          <input type="email" class="am-form-field" name="member.email" placeholder="E-mail" required>
+        </div>
+      </div>
+      <div class="am-form-group am-margin-bottom-xs">
+        <div class="am-u-sm-7 am-input-group am-input-group-sm">
+          <span class="am-input-group-label"><i class="am-icon-barcode am-icon-fw"></i></span>
+          <input type="text" class="am-form-field" name="captchaToken" placeholder="验证码" required>
+        </div>
+        <div class="am-u-sm-5 am-padding-left-0">
+          <img id="registerWindowCaptchaImage" class="am-fl" src="/captcha?width=85&height=33&fontsize=27" alt="换一张" />
+        </div>
+      </div>
+      <div class="am-form-group am-margin-bottom-xs">
+        <div class="am-u-sm-12 am-u-md-12">
+          <input type="checkbox" id="isAgreeAgreement" name="isAgreeAgreement" value="true" checked required />&nbsp;&nbsp;<a href="javascript:void(0);" class="am-badge am-badge-secondary" data-am-modal="{target: '#my-popup'}">已阅读并同意《注册协议》</a>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-12 am-input-group am-input-group-sm">
+          <button id="registerWindowSubmitBtn" type="submit" class="am-btn am-btn-primary am-btn-block" data-am-loading="{loadingText: '努力注册中...'}">注册</button>
+        </div>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- 会员注册 end -->
+<!-- 注册协议 start -->
+<div class="am-popup" id="my-popup">
+  <div class="am-popup-inner">
+    <div class="am-popup-hd">
+      <h4 class="am-popup-title">注册协议</h4>
+      <span data-am-modal-close
+            class="am-close">&times;</span>
+    </div>
+    <div class="am-popup-bd" id="agreementContent">
+    </div>
+  </div>
+</div>
+<!-- 注册协议 end -->
+<!-- 顶部操作栏和logo、搜索 start -->
+<div class="shop-header">
+
+<div class="am-panel am-panel-default am-margin-bottom-0">
+
+  <div class="am-panel-hd am-kai am-text-xs am-padding-vertical-0 am-padding-horizontal-xl am-cf">
+
+    <div class="am-fl">
+
+      <span class="am-fl">您好&nbsp;</span><span id="headerLoginMemberUsername" class="am-text-warning am-fl"></span><span class="am-hide-sm-only am-fl">,欢迎来到JFinalShop商城!</span>
+
+  	<a href="javascript:void(0);" id="headerShowLoginWindow">[登  录]</a>
+
+  	<a href="/memberCenter" id="headerMemberCenter">[会员中心]</a>
+
+  	<a href="javascript:void(0);" id="headerShowRegisterWindow">[注  册]</a>
+
+  	<a href="/memberCenter/logout" id="headerLogout">[退  出]</a>
+
+    </div>
+
+    <div class="am-fr am-hide-sm-only">
+
+
+      <a href="/html/article_content/201010/5010509a555548939840a3103d3cea71.html"  target="_blank">关于我们</a>
+
+
+
+    </div>   
+
+  </div>
+
+  <div class="am-panel-bd am-padding-0">
+
+    <div class="am-g">
+
+      <div class="am-hide-sm-only am-u-md-4 am-u-lg-4 am-vertical-align" style="height:70px;">
+
+        <img class="am-vertical-align-middle" src="/statics/img/upload/logo.png" title="JFinalShop商城">
+
+      </div>
+
+      <div class="am-u-sm-12 am-u-md-5 am-u-lg-4 shop-margin-vertical">
+
+        <form id="productSearchForm" action="/shop/product/search" method="get" data-am-validator>
+
+        <div class="am-g">
+
+          <div class="am-u-sm-12 am-input-group am-input-group-sm am-input-group-primary">
+
+            <input type="text" id="productSearchKeyword" name="keyword" class="am-form-field" placeholder="请输入关键词..." value="" required>
+
+            <span class="am-input-group-btn">
+
+              <button class="am-btn am-btn-primary" type="submit"><span class="am-icon-search"></span></button>
+
+            </span>
+
+          </div>
+
+          <div class="am-u-sm-12 am-text-xs">
+
+            热门关键词: 
+
+
+            <a href="/shop/product/search?keyword=电子书">电子书 </a>
+
+
+            <a href="/shop/product/search?keyword=生活电器">生活电器 </a>
+
+
+            <a href="/shop/product/search?keyword=电脑配件">电脑配件 </a>
+
+
+          </div>
+
+        </div>
+
+        </form>
+
+      </div>
+
+      <div class="am-show-lg-only am-u-lg-4 am-text-right am-vertical-align" style="height:64px;">
+
+        <div class="am-text-sm am-vertical-align-middle">
+
+          7×24小时服务热线：<strong>400-8888888</strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+<!-- 顶部操作栏和logo、搜索 end -->
+<!-- 导航 start -->
+
+<header class="am-topbar am-margin-bottom-0">
+
+  <h1 class="am-topbar-brand">
+    &nbsp;
+  </h1>
+
+
+
+
+  <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#doc-topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
+
+
+
+  <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
+
+    <ul class="am-nav am-nav-pills am-topbar-nav">
+
+
+      <li>
+
+         <a href="/">首页</a>
+
+      </li>
+
+
+    </ul>
+
+    <!-- 
+
+    <div class="am-topbar-right">
+
+      <div class="am-dropdown" data-am-dropdown="{boundary: '.am-topbar'}">
+
+        <button class="am-btn am-btn-secondary am-topbar-btn am-btn-sm am-dropdown-toggle" data-am-dropdown-toggle>其他 <span class="am-icon-caret-down"></span></button>
+
+        <ul class="am-dropdown-content">
+
+          <li><a href="#">注册</a></li>
+
+          <li><a href="#">随便看看</a></li>
+
+        </ul>
+
+      </div>
+
+    </div>
+
+     -->
+
+
+
+    <div class="am-topbar-right">
+
+      <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick="window.open('/shop/cartItem/list')"><span class="am-icon-shopping-cart am-margin-right-xs"></span>购物车</button>
+
+    </div>
+
+  </div>
+
+</header>
+</div>
+<!-- 导航 end -->
+<div class="am-cf shop-main">
+  <!-- content start -->
+  <div class="shop-content">
+    <div class="shop-content-body">
+      <div class="am-g">
+        <div class="am-u-md-3 am-hide-sm-only am-text-xs am-margin-left-0">
+          <table class="am-table am-table-bordered am-table-compact am-margin-top-xs">
+            <thead>
+            <tr>
+              <th class="am-primary">推荐文章</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>
+                <a href="/html/article_content/201010/9028537042de4f8da39bf312ac43ba3b.html" title="邮局汇款">邮局汇款</a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="/html/article_content/201010/47532f706bf94c9ebb23a87a99424072.html" title="工商网银付款说明">工商网银付款说明</a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          
+          <table class="am-table am-table-bordered am-table-compact">
+            <thead>
+            <tr>
+              <th class="am-warning">热点文章</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>
+                <a href="/html/article_content/201010/9028537042de4f8da39bf312ac43ba3b.html" title="邮局汇款">邮局汇款</a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="/html/article_content/201010/47532f706bf94c9ebb23a87a99424072.html" title="工商网银付款说明">工商网银付款说明</a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="am-u-sm-12 am-u-md-9">
+          <div class="am-g am-margin-vertical-xs">
+            <div class="am-u-sm-12 am-u-md-7">
+              <ol class="am-breadcrumb am-margin-bottom-0">
+                <li><span class="am-icon-home"> </span>首页</li>
+                <li><a href="/shop/article/list?id=402881882ba8455f012ba86aa5c60002">支付方式</a></li>
+              </ol>
+            </div>
+            <div class="am-u-md-5 am-hide-sm-only">
+              <form id="articleSearchForm" action="/shop/article/search" method="get">
+              <div class="am-input-group am-input-group-sm am-input-group-primary">
+                <input type="text" id="articleSearchKeyword" name="keyword" class="am-form-field" placeholder="请输入关键词...">
+                <span class="am-input-group-btn">
+                  <button class="am-btn am-btn-primary" type="submit"><span class="am-icon-search"></span></button>
+                </span>
+              </div>
+              </form>
+            </div>
+          </div>
+          <div class="am-panel am-panel-default">
+            <div class="am-panel-bd">
+            <article class="am-article">
+            <div class="am-article-hd">
+              <h1 class="am-article-title">工商网银付款说明</h1>
+              <p class="am-article-meta">
+                日期：2010-10-14&nbsp;&nbsp;
+                
+                点击：<span id="hits"></span> 次
+              </p>
+            </div>
+            <div class="am-article-bd">
+              <p class="am-article-lead"><p>&nbsp;</p><p style="color: #f09;">工行B2C网上支付使用说明</p><p style="color: #f09;">什么是工行网上银行在线支付？</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B2C网上支付业务是指企业（卖方）与个人（买方）通过因特网上的电子商务网站进行交易时，工行为商户提供网上资金结算服务的一种业务。目前B2C在线支付系统是专门为拥有工行牡丹信用卡、灵通卡、贷记卡、活折或&ldquo;理财金帐户&rdquo;卡账户，并开通网上银行的个人客户进行网上购物所开发的支付平台，其信誉度较高。</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;客户在工行特约购物网站选定货物后，根据网站提示或链接，去虚拟收银台付款。支付方式选择工行网上银行在线支付，客户将被带到工行网上支付页面，订单信息加密传递到工行网站且不可更改。客户只需根据画面提示，使用U盾或口令卡及相应密码，确认提交即可。</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;网上支付适用于全国范围的工行账户实时支付，不须再到邮局汇款、不须使用现金支付。网上支付也不须要向商户网站提供支付卡号、卡密码与身份证件号等个人信息，最后支付时链接至工行支付页面支付，保证了客户的个人信息不被商户或外界获取，所以更安全、快捷、方便。</p><p style="color: #f09;">如何使用工行网上支付？</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当您在商城网站，最后选择工行网上银行在线支付，将直接链入工行网站支付页面，只要输入工行网上银行已注册的任意卡号或&ldquo;e通卡&rdquo;，并输入密码（U盾客户客户，输入U盾密码；口令卡客户输入口令卡坐标和网银登陆密码），提交即可。提交后系统会提示网上支付是否成功，如果失败则提示失败原因。一旦您支付提交后将不能修改，您的帐户立即被扣款。如果您还不是工行网上银行的用户，您可以至工行任一网点办理注册开户。注册成功后，即可使用工行网上支付。</p><p><strong>能够使用工行网上支付功能的分以下二种：</strong></p><p>1、动态口令卡客户</p><p>（1）携带本人有效证件及注册网上银行时使用的牡丹卡前往工商银行任何一个储蓄所，提交网上银行业务申请单（原已在柜台办理过网银业务的客户请填写变更单申领口令卡），并向柜台申明开通&ldquo;电子商务&rdquo;功能。</p><p>（2）首次支付前，先登陆工行网上银行&ldquo;个人网上银行登录&rdquo;修改网银登录密码为数字和字母的组合，并激活口令卡(查看电子口令卡使用介绍)</p><p>（3）单笔支付限额500元，每日累计支付限额1000元</p><p>（4）已开通手机短信认证的的口令卡，单笔支付限额2000元，每日累计支付限额5000元（什么是手机短信认证？）</p><p>（5）口令卡可使用1000次，之后需要前往柜台重新申领。</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注意：</p><p>1、您领到电子口令卡后，首次进行B2C交易，必须要先登录网银一次，才能正常使用B2C交易。</p><p>2、U盾客户</p><p>（1）携带本人有效证件及注册网上银行时使用的牡丹卡前往工商银行任何一个储蓄所，提交网上银行业务申请单</p><p>（2）首次支付前，先登陆工行网上银行安装驱动、下载证书</p><p>（3）U盾客户不受交易限额控制，可享受24小时大额转账汇款等各种服务，只要您是工行个人网上银行客户，携带本人有效证件及注册网上银行时使用的牡丹卡到工行营业网点就可以申请U盾。</p><p style="color: #39f;">使用U盾有三个步骤：</p><p>第一步：安装驱动程序</p></p>
+            </div>
+          </article></div>
+          </div>
+        </div>
+      </div>
+      <div class="am-margin-horizontal">
+        <div class="am-slider am-slider-default am-slider-carousel" data-am-flexslider="{controlNav: false, smoothHeight: true, itemWidth: 100, itemMargin: 25, slideshow: false}">
+          <ul class="am-slides">
+          </ul>
+        </div> 
+      </div>
+      <hr class="am-margin-bottom-xs">
+      <ul class="am-avg-sm-2 am-avg-md-4 am-avg-lg-5 am-thumbnails am-text-xs">
+        <li class="am-text-center am-padding-0">
+          <a href=/html/article_content/201010/9102600e47b7401b843ad3722e1e9b70.html >购物流程</a>
+        </li>
+        <li class="am-text-center am-padding-0">
+          <a href=/html/article_content/201010/90eb7634990341909027a5e20245b3e1.html >网站制度</a>
+        </li>
+        <li class="am-text-center am-padding-0">
+          <a href=/html/article_content/201010/50588403d9dd494c9035fa763e49e112.html >订单查询</a>
+        </li>
+        <li class="am-text-center am-padding-0">
+          <a href=/html/article_content/201010/390aed8de096473aa3fd928c25bf9fb9.html >积分说明</a>
+        </li>
+        <li class="am-text-center am-padding-0">
+          <a href=/html/article_content/201010/c55109104bb241c7a51605602b1531df.html >会员注册协议</a>
+        </li>
+        <li class="am-text-center am-padding-0">
+          <a href=/html/article_content/201010/0340b92488ca464aa8d545fb899dcd25.html >会员等级</a>
+        </li>
+        <li class="am-text-center am-padding-0">
+          <a href=/html/article_content/201010/fd97e448663c4f5a8f033743328a8038.html >网上支付</a>
+        </li>
+        <li class="am-text-center am-padding-0">
+          <a href=/html/article_content/201010/fd97e448663c4f5a8f033743328a8038.html >邮局汇款</a>
+        </li>
+        <li class="am-text-center am-padding-0">
+          <a href=/html/article_content/201010/ac6f0b7c351c41058dc800ea0091e26c.html >退货政策</a>
+        </li>
+        <li class="am-text-center am-padding-0">
+          <a href=/html/article_content/201010/070088f2df794b26b03bdf022565f1f2.html >关于我们</a>
+        </li>
+        <li class="am-text-center am-padding-0">
+          <a href=/html/article_content/201010/82c2ffe3f0234a6ba2aed4727a75a19a.html >发票制度说明</a>
+        </li>
+        <li class="am-text-center am-padding-0">
+          <a href=/html/article_content/201010/cb4b35cc2fd14ddbb20b49d7637fab2f.html >常见问题</a>
+        </li>
+      </ul>
+    </div>
+    <footer class="shop-content-footer">
+      <hr>
+      <div class="am-text-center am-text-xs am-margin-0"><p>Copyright &nbsp;© 2016 sun.ao. All rights reserved.</p></div>
+    </footer>
+  </div>
+  <!-- content end -->
+</div>
+</body>
+</html>

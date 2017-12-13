@@ -1,0 +1,115 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '文章更新', formJS: true}){}%>
+<script>
+  $().ready( function() {
+    $(".loadingBar").hide();
+				
+	$("#inputForm").submit(function() {
+	  $(".loadingBar").show();
+	  $("#id").val($("#idSelect").val());
+	  $("#maxResults").val($("#maxResultsInput").val());
+	});
+
+	$("#idSelect").change(function(){
+	  $("#progressid").css("width", "0%");
+	}); 
+		
+    var isInitialize = false;
+    $("#inputForm").ajaxForm({
+	  dataType: "json",
+	  beforeSubmit: function(data) {
+	    if (!isInitialize) {
+		  isInitialize = true;
+		  //$("#idSelect").attr("disabled", true);
+		  $("#maxResultsInput").attr("disabled", true);
+		  $(".submitButton").attr("disabled", true);
+		  $("#statusTr").show();
+		  $("#status").text("正在进行更新操作，请稍后...");
+		}
+	  },
+	  success: function(data) {
+	    if (data.status == "ARTICLE_BUILDING") {
+		  var maxResults = Number($("#maxResults").val());
+		  var firstResult = Number(data.firstResult);
+		  $("#progressid").css("width", "90%");
+		  $("#status").text("正在更新文章[" + (firstResult + 1) + " - " + (firstResult + maxResults) + "]，请稍后...");
+		  $("#firstResult").val(firstResult);
+		  $("#inputForm").submit();
+	    } else if (data.status == "ARTICLE_FINISH") {
+		  isInitialize = false;
+		  $("#firstResult").val("0");
+		  $("#statusTr").hide();
+		  //$("#idSelect").attr("disabled", false);
+		  $("#maxResultsInput").attr("disabled", false);
+		  $(".submitButton").attr("disabled", false);
+		  $("#progressid").css("width", "100%");
+		  $("#status").text("文章更新成功！[更新总数: " + data.buildTotal + "]");
+		}
+	  }
+	});
+  });
+</script>
+</head>
+<body>
+  <div class="admin-content">
+    <div class="admin-content-body">
+      <div class="am-cf app-padding-title">
+        <div class="am-fl am-cf">
+          <strong class="am-text-primary am-text-lg">模板管理</strong> / <small>文章更新</small>
+        </div>
+      </div>
+      
+      <hr data-am-widget="divider" class="am-divider am-divider-dotted am-margin-0" />
+      
+      <form id="inputForm" action="${base}/buildHtml/article" method="post">
+      <input type="hidden" id="id" name="id" value="" />
+	  <input type="hidden" id="maxResults" name="maxResults" value="" />
+	  <input type="hidden" id="firstResult" name="firstResult" value="0" />
+      <div class="am-form am-margin am-form-horizontal">
+        <div class="am-form-group am-form-group-sm">
+          <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">文章分类</label>
+          <div class="am-u-sm-8 am-u-md-9">
+            <select id="idSelect" name="" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm', btnStyle: 'secondary'}" placeholder="更新所有分类">
+              <option value=""></option>
+              <%for(list in articleCategoryTreeList){%>
+  			  <option value="${list.id}">
+  			    <%if (list.level != 0){%>
+  			    <%for( i in range(0,list.level)){%>--<%}%>
+  			    <%}%>
+  			    ${list.name}
+  			  </option>
+  			  <%}%>
+            </select>
+          </div>
+        </div>
+        <div class="am-form-group am-form-group-sm">
+          <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">每次更新数</label>
+          <div class="am-u-sm-8 am-u-md-9">
+            <input type="number" id="maxResultsInput" class="am-form-field" name="" value="50" min="0">
+          </div>
+        </div>
+        <!-- 进度条 -->
+        <div class="am-form-group am-form-group-sm loadingBar">
+          <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">&nbsp;</label>
+          <div class="am-u-sm-8 am-u-md-9">
+            <div class="am-progress am-progress-striped">
+          <div id="progressid"  class="am-progress-bar am-progress-bar-success"><p id="status"></p></div>
+        </div>
+          </div>
+        </div>
+        <hr data-am-widget="divider" class="am-divider am-divider-dashed" />
+        <div class="am-form-group am-form-group-sm">
+          <div class="am-u-sm-8 am-u-sm-offset-4 am-u-md-9 am-u-md-offset-3">
+            <button type="submit" class="am-btn am-btn-primary"><span class="am-icon-save">  提交更新</span></button>
+            <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  </div>
+<!-- content end -->
+</body>
+</html>

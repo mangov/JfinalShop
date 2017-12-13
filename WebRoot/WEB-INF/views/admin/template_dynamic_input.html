@@ -1,0 +1,38 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '编辑动态模板'}){}%>
+</head>
+<body>
+  <div class="admin-content">
+    <div class="admin-content-body">
+      <div class="am-cf app-padding-title">
+        <div class="am-fl am-cf">
+          <strong class="am-text-primary am-text-lg">模板管理</strong> / <small>编辑动态模板</small>
+        </div>
+      </div>
+      
+      <hr data-am-widget="divider" class="am-divider am-divider-dotted am-margin-0" />
+      
+      <form id="inputForm" action="${base}/templateDynamic/update" method="post">
+      <input type="hidden" name="dynamicConfig.name" value="${dynamicConfig.name!}" />
+      <div class="am-form am-margin am-margin-horizontal-0 am-form-horizontal">
+        <div class="am-form-group am-form-group-sm">
+          <div class="am-u-sm-12 am-u-md-12">
+            <textarea rows="25" class="am-form-field" name="templateFileContent">${templateFileContent!}</textarea>
+          </div>
+        </div>
+        <hr data-am-widget="divider" class="am-divider am-divider-dashed" />
+        <div class="am-form-group am-form-group-sm">
+          <div class="am-u-sm-12 am-u-md-12">
+            <button type="submit" class="am-btn am-btn-primary"><span class="am-icon-save">  保  存</span></button>
+            <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+          </div>
+        </div>
+      </div>
+      </form>
+    </div>
+  </div>
+<!-- content end -->
+</body>
+</html>

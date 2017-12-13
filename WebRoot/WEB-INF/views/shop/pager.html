@@ -1,0 +1,87 @@
+<%
+var pageNumber = pager.pageNumber;
+var pageSize = pager.pageSize;
+var totalPage = pager.totalPage;
+var maxShowPageCount = 6;
+var parameter = "";
+
+if (pageSize != ""){
+	parameter = parameter + "&pageSize=" + pageSize;
+}
+if (property != ""){
+	parameter = parameter + "&property=" + property;
+}
+if (keyword != ""){
+	parameter = parameter + "&keyword=" + keyword;
+}
+if (orderBy != ""){
+	parameter = parameter + "&orderBy=" + orderBy;
+}
+if (orderType != ""){
+	parameter = parameter + "&orderType=" + orderType;
+}
+
+if (strutil.contain (baseUrl,"?")){
+	baseUrl = baseUrl + "&";
+}else{
+	baseUrl = baseUrl + "?";
+}
+
+var firstPageUrl = baseUrl + "pageNumber=1" + parameter;
+var lastPageUrl = baseUrl + "pageNumber=" + totalPage + parameter;
+var prePageUrl = baseUrl + "pageNumber=" + (pageNumber - 1) + parameter;
+var nextPageUrl = baseUrl + "pageNumber=" + (pageNumber + 1) + parameter;
+
+if (maxShowPageCount <= 0){
+	maxShowPageCount = 6;
+}
+
+var segment = parseInt(((pageNumber - 1) / maxShowPageCount)) + 1;
+var startPageNumber = (segment - 1) * maxShowPageCount + 1;
+var endPageNumber = segment * maxShowPageCount;
+if (startPageNumber < 1){
+	startPageNumber = 1;
+}
+
+if (endPageNumber > totalPage){
+	endPageNumber = totalPage;
+}
+%>
+<%if (totalPage >= 1){%>
+  <div class="am-cf am-margin-right">
+    <div class="am-fr">
+	  <ul class="am-pagination am-text-xs am-margin-0">
+		<!-- 上一页 -->
+		<%if (pageNumber > 1){%>
+	    <li>
+	      <a href="${base}${prePageUrl}"><span class="am-icon-arrow-circle-left"> 上一页</span></a>
+	    </li>
+		<%}else{%>
+		<li>
+		  <span class="am-icon-arrow-circle-left"> 上一页</span>
+		</li>
+		<%}%>
+		
+		<li class="am-active">
+		  <span>${pageNumber}</span>
+		</li>
+    
+		<!-- 下一页 -->
+		<%if (pageNumber < totalPage){%>
+		<li>
+		  <a href="${base}${nextPageUrl}">下一页 <span class="am-icon-arrow-circle-right"></span></a>
+		</li>
+		<%}else{%>
+	    <li>
+		  <span>下一页 <span class="am-icon-arrow-circle-right"></span></span>
+		</li>
+		<%}%>
+		
+		<!-- 总页数 -->
+		<li>
+		  共 ${totalPage} 页
+		</li>
+	  </ul>
+      <%}%>
+    </div>
+  </div>

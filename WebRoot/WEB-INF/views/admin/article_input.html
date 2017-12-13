@@ -1,0 +1,152 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '添加/编辑文章', validatorJS: true, loadUE: true}){}%>
+<%var isAdd = false;
+  var isEdit = false;
+  if(isEmpty(article.id)){
+    isAdd = true;
+  }else{
+  isEdit = true;
+  }%>
+</head>
+<body>
+<!-- content start -->
+<div class="admin-content">
+  <div class="admin-content-body">
+    <div class="am-cf app-padding-title">
+      <div class="am-fl am-cf">
+        <strong class="am-text-primary am-text-lg">内容管理</strong> / <small><%if(isAdd){%>添加文章<%}else{%>编辑文章<%}%></small>
+      </div>
+    </div>
+  
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+    
+    <form class="validator-form" action="<%if (isAdd){%>${base}/article/save<%}else{%>${base}/article/update<%}%>" method="post">
+    <input type="hidden" name="article.id" value="${article.id!}" />
+    <div class="am-form am-margin am-form-horizontal">
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">文章标题</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="text" class="am-form-field" name="article.title" value="${article.title!}" required />
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${titleMessages!}</div>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">文章分类</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <select name="article.articleCategory_id" data-am-selected="{btnWidth: '100%', maxHeight: '200px', btnSize: 'sm', btnStyle: 'secondary'}">
+            <%for(list in articleCategoryTreeList){%>
+		    <option value="${list.id}"<%if (list.id == article.articleCategory_id!){%> selected<%}%>>
+		      <%if (list.level != 0){%>
+		      <%for( i in range(0,list.level!0)){%>--<%}%>
+			  <%}%>
+			  ${list.name}
+			</option>
+			<%}%>
+          </select>
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${articleCategoryIdMessages!}</div>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">作者</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="text" class="am-form-field" name="article.author" value="${article.author!}">
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">是否推荐</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <label class="am-radio-inline">
+            <input type="radio" name="article.isRecommend" value="true"<%if (article.isRecommend! == true){%> checked<%}%> required> 是
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="article.isRecommend" value="false"<%if (isAdd || article.isRecommend! == false){%> checked<%}%>> 否
+          </label>
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${isRecommendMessages!}</div>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">是否置顶</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <label class="am-radio-inline">
+            <input type="radio" name="article.isTop" value="true"<%if (article.isTop! == true){%> checked<%}%> required> 是
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="article.isTop" value="false"<%if (isAdd || article.isTop! == false){%> checked<%}%>> 否
+          </label>
+           <div class="am-text-warning am-margin-top-xs am-text-xs">${isTopMessages!}</div>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">是否发布</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <label class="am-radio-inline">
+            <input type="radio" name="article.isPublication" value="true"<%if (isAdd || article.isPublication! == true){%> checked<%}%> required> 是
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="article.isPublication" value="false"<%if (article.isPublication! == false){%> checked<%}%>> 否
+          </label>
+           <div class="am-text-warning am-margin-top-xs am-text-xs">${isPublicationMessages!}</div>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">内容</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <textarea class="am-validate" name="article.content" id="editor" required>${article.content!}</textarea>
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${contentMessages!}</div>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">关键词</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="text" class="am-form-field" name="article.metaKeywords" value="${article.metaKeywords!}">
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">页面描述</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <textarea rows="10" class="am-form-field" name="article.metaDescription">${article.metaDescription!}</textarea>
+        </div>
+      </div>
+      <hr data-am-widget="divider" class="am-divider am-divider-dashed" />
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-8 am-u-sm-offset-4 am-u-md-9 am-u-md-offset-3">
+          <button type="submit" class="am-btn am-btn-primary"><span class="am-icon-save">  保  存</span></button>
+          <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div>
+</div>
+<!-- content end -->
+<script>
+<!-- UEditor验证 -->
+$(function() {
+  var $textArea = $('#editor');
+  var $form = $('.validator-form');
+
+  $form.validator({
+    submit: function() {
+      // 同步编辑器数据
+      ue.sync();
+      var formValidity = this.isFormValid();
+      // 表单验证未成功，而且未成功的第一个元素为 UEEditor 时，focus 编辑器
+      if (!formValidity && $form.find('.' + this.options.inValidClass).eq(0).is($textArea)) {
+        ue.focus();
+      }
+      return false;
+    }
+  });
+
+  // 编辑器内容变化时同步到 textarea
+  ue.addListener('contentChange', function() {
+    ue.sync();
+    // 触发验证
+    $textArea.trigger('change');
+  });
+});
+</script>
+</body>
+</html>

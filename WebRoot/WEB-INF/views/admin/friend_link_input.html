@@ -1,0 +1,86 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<% include("/common/admin_head.html",{title: '添加/编辑友情链接', validatorJS: true}){}%>
+<%var isAdd = false;
+  var isEdit = false;
+  if(isEmpty(friendLink.id)){
+	isAdd = true;
+  }else{	
+	isEdit = true;
+  }%>
+<script>
+  $(function() {
+    $('#doc-form-file').on('change', function() {
+      var fileNames = '';
+      $.each(this.files, function() {
+        fileNames += '<span class="am-badge">' + this.name + '</span> ';
+      });
+      $('#file-list').html(fileNames);
+    });
+  });
+</script>
+</head>
+<body>
+<!-- content start -->
+<div class="admin-content">
+  <div class="admin-content-body">
+    <div class="am-cf app-padding-title">
+      <div class="am-fl am-cf">
+        <strong class="am-text-primary am-text-lg">内容管理</strong> / <small><%if(isAdd){%>添加友情链接<%}else{%>编辑友情链接<%}%></small>
+      </div>
+    </div>
+  
+    <hr data-am-widget="divider" class="am-divider am-divider-dashed am-margin-0" />
+    
+    <form class="validator-form" action="<%if (isAdd){%>${base}/friendLink/save<%}else{%>${base}/friendLink/update<%}%>" enctype="multipart/form-data" method="post">
+    <input type="hidden" name="friendLink.id" value="${friendLink.id!}" />
+    <div class="am-form am-margin am-form-horizontal">
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">友情链接名称</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="text" class="am-form-field" name="friendLink.name" value="${friendLink.name!}" placeholder="友情链接名称不允许为空!" required />
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${nameMessages!}</div>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">网址</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="url" class="am-form-field" name="friendLink.url" value="${friendLink.url!}" placeholder="请以http://或https://开头!" required />
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${urlMessages!}</div>
+        </div>
+      </div>
+	  <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">LOGO</label>
+        <div class="am-u-sm-4 am-u-md-6 am-form-file">
+          <button type="button" class="am-btn am-btn-default am-btn-sm">
+          <i class="am-icon-cloud-upload"></i> 上传图片</button>
+          <input id="doc-form-file" type="file" name="logo" required>
+        </div>
+        <div class="am-u-sm-4 am-u-md-3">
+          <div id="file-list">
+            <%if (isEdit && friendLink.logo != null){%><a href="${base}${friendLink.logo}" class="am-btn am-btn-default am-btn-sm" target="_blank">查看</a><%}%>
+          </div>
+        </div>
+      </div>
+      <div class="am-form-group am-form-group-sm">
+        <label class="am-u-sm-4 am-u-md-3 am-text-right am-form-label">排序</label>
+        <div class="am-u-sm-8 am-u-md-9">
+          <input type="number" class="am-form-field" name="friendLink.orderList" value="${friendLink.orderList!50}" placeholder="只允许输入零或正整数" min="0" max="1000" required />
+          <div class="am-text-warning am-margin-top-xs am-text-xs">${orderListMessages!}</div>
+        </div>
+      </div>
+      <hr data-am-widget="divider" class="am-divider am-divider-dashed" />
+      <div class="am-form-group am-form-group-sm">
+        <div class="am-u-sm-8 am-u-sm-offset-4 am-u-md-9 am-u-md-offset-3">
+          <button type="submit" class="am-btn am-btn-primary"><span class="am-icon-save">  保  存</span></button>
+          <button type="button" class="am-btn am-btn-default" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div>
+</div>
+<!-- content end -->
+</body>
+</html>

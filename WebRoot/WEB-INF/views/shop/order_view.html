@@ -1,0 +1,181 @@
+<!doctype html>
+<html class="no-js fixed-layout">
+<head>
+<% include("/common/shop_head.html"){}%>
+</head>
+<body>
+<%include("/shop/header.html"){}%>
+<div class="am-cf shop-main">
+  <!-- sidebar start -->
+  <%include("/shop/sidebar.html"){}%>
+  <!-- sidebar end -->
+
+  <!-- content start -->
+  <div class="shop-content">
+    <div class="shop-content-body">
+        <ol class="am-breadcrumb am-margin-left am-margin-bottom-0">
+          <li><span class="am-icon-shopping-bag am-icon-fw"> </span>交易信息</li>
+          <li>我的订单</li>
+          <li class="am-active">订单详情</li>
+          <li>${order.orderSn}</li>
+        </ol>
+        <div class="am-panel am-panel-default am-text-xs am-margin-horizontal-sm">
+          <div class="am-panel-hd">
+            <span class="am-text-success">订单状态 [订单编号：${order.orderSn}]</span>
+          </div>
+          <div class="am-panel-bd">
+            <%if (order.orderStatus == "unprocessed"){%>
+            <p class="am-text-danger">等待订单处理</p>
+            <%}else if (order.orderStatus == "processed"){%>
+            <p class="am-text-danger">您的订单正在处理中</p>
+            <%}else if (order.orderStatus == "completed"){%>
+            <p class="am-text-danger">您的订单已完成</p>
+            <%}else if (order.orderStatus == "invalid"){%>
+            <p class="am-text-danger">您的订单已作废</p>
+            <%}%>
+            <%if (order.orderStatus != "completed" && order.orderStatus != "invalid"){%>
+            <%if (order.paymentConfig != null){%>
+            <%if (order.paymentStatus == "unpaid"){%>
+            <form action="${base}/shop/payment/confirm" method="post">
+            <%if (order.paymentConfig.paymentConfigType == "deposit"){%>
+            <input type="hidden" name="paymentType" value="deposit" />
+            <%}else if (order.paymentConfig.paymentConfigType == "offline"){%>
+            <input type="hidden" name="paymentType" value="offline" />
+            <%}else{%>
+            <input type="hidden" name="paymentType" value="online" />
+            <%}%>
+            <input type="hidden" name="order.id" value="${order.id}" />
+            <p class="am-text-danger">您尚未完成订单支付&nbsp;&nbsp;<button type="submit" class="am-badge am-badge-secondary">立即支付</button></p>
+            </form>
+            <%}else if (order.paymentStatus == "partPayment"){%>
+            <form action="${base}/payment/confirm" method="post">
+            <%if (order.paymentConfig.paymentConfigType == "deposit"){%>
+            <input type="hidden" name="paymentType" value="deposit" />
+            <%}else if  (order.paymentConfig.paymentConfigType == "offline"){%>
+            <input type="hidden" name="paymentType" value="offline" />
+            <%}else{%>
+            <input type="hidden" name="paymentType" value="online" />
+            <%}%>
+            <input type="hidden" name="order.id" value="${order.id}" />
+            <p class="am-text-danger">您尚未完成订单支付 <button type="submit" class="am-btn am-btn-default am-btn-xs">支付余款</button></p>
+            </form>
+            <%}else{%>
+            <p class="am-text-danger">${i18n("PaymentStatus." + order.paymentStatus)}</p>
+            <%}%>
+            <%}%>
+            <p class="am-text-danger">${i18n("ShippingStatus." + order.shippingStatus)}</p>
+            <%}%>
+          </div>
+        </div>
+        <div class="am-panel am-panel-default am-text-xs am-margin-horizontal-sm">
+          <div class="am-panel-hd">
+            收货信息
+          </div>
+          <div class="am-panel-bd am-g am-padding-horizontal-0">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">收货人</div>
+            <div class="am-u-sm-8 am-u-md-10">${order.shipName}</div>
+            <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">电话</div>
+            <div class="am-u-sm-8 am-u-md-4">${order.shipPhone}</div>
+            <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">手机</div>
+            <div class="am-u-sm-8 am-u-md-4">${order.shipMobile}</div>
+            <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">收货地区</div>
+            <div class="am-u-sm-8 am-u-md-4">${order.shipArea}</div>
+            <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">邮编</div>
+            <div class="am-u-sm-8 am-u-md-4">${order.shipZipCode}</div>
+            <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">收货地址</div>
+            <div class="am-u-sm-8 am-u-md-10">${order.shipAddress}</div>
+            <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">附言</div>
+            <div class="am-u-sm-8 am-u-md-10">${order.memo}</div>
+          </div>
+        </div>
+        <div class="am-panel am-panel-default am-text-xs am-margin-horizontal-sm">
+          <div class="am-panel-hd">
+            支付信息
+          </div>
+          <div class="am-panel-bd am-g am-padding-horizontal-0">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">配送方式</div>
+            <div class="am-u-sm-8 am-u-md-4">${order.deliveryTypeName}</div>
+            <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">支付方式</div>
+            <div class="am-u-sm-8 am-u-md-4">${order.paymentConfigName}</div>
+            <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">商品重量</div>
+            <div class="am-u-sm-8 am-u-md-4">${order.productWeight} ${i18n("WeightUnit." + order.productWeightUnit)}</div>
+            <div class="am-u-sm-4 am-u-md-2 am-text-right am-kai am-padding-horizontal-0">配送费用</div>
+            <div class="am-u-sm-8 am-u-md-4 am-text-danger">${order.deliveryFee,orderUnitCurrencyFormat}</div>
+          </div>
+        </div>
+        <div class="am-panel am-panel-default am-text-xs am-margin-horizontal-sm">
+          <div class="am-panel-hd">
+            商品信息
+          </div>
+          <div class="am-panel-bd am-g am-padding-0 am-scrollable-horizontal">
+            <table class="am-table am-table-bordered am-table-striped am-table-hover am-text-nowrap am-text-xs am-margin-bottom-0">
+            <thead>
+              <tr>
+                <th>商品名称</th>
+				<th>购买价格</th>
+				<th>购买数量</th>
+              </tr>
+            </thead>
+            <tbody>
+              <%for(list in order.orderItemList){%>
+		      <tr>
+			    <td>
+				  <a href="${base}${list.productHtmlFilePath}" target="_blank">${list.productName}</a>
+				</td>
+				<td>
+				  ${list.productPrice,priceCurrencyFormat}
+			    </td>
+				<td>
+				  ${list.productQuantity}
+				</td>
+			  </tr>
+			  <%}%>
+              <tr>
+                <td colspan="3">
+                  商品总金额：<span class="am-text-danger">${order.productTotalPrice,orderUnitCurrencyFormat}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                  配送费用：<span class="am-text-danger">${order.deliveryFee,orderUnitCurrencyFormat}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                  支付手续费：<span class="am-text-danger">${order.paymentFee,orderUnitCurrencyFormat}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                  订单总金额：<span class="am-text-danger">${order.totalAmount,orderUnitCurrencyFormat}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+        <div class="am-panel am-panel-default am-text-xs am-margin-horizontal-sm">
+          <div class="am-panel-hd">
+            订单日志
+          </div>
+          <div class="am-panel-bd am-g am-padding-0 am-scrollable-horizontal">
+            <table class="am-table am-table-bordered am-table-striped am-table-hover am-text-nowrap am-text-xs am-margin-bottom-0">
+            <thead>
+              <tr>
+                <th>序号</th>
+				<th>日志类型</th>
+				<th>日志信息</th>
+				<th>操作时间</th>
+				<th>操作人</th>
+              </tr>
+            </thead>
+            <tbody>
+              <%for(list in order.orderLogList){%>
+			  <tr>
+			    <td>${listLP.index}</td>
+				<td>${i18n("OrderLogType." + list.orderLogType)}</td>
+				<td>${list.info!"-"}</td>
+				<td>${list.createDate,dateFormat="yyyy-MM-dd HH:mm:ss"}</td>
+				<td>${list.operator!"-"}</td>
+			  </tr>
+              <%}%>
+            </tbody>
+            </table>
+          </div>
+        </div>
+        <button type="button" class="am-btn am-btn-default am-btn-xs am-fr am-margin-sm" onclick="window.history.back(); return false;"><span class="am-icon-undo">  返  回</span></button>
+      </div>
+    <%include("/shop/footer.html"){}%>
+  </div>
+  <!-- content end -->
+</div>
+</body>
+</html>
