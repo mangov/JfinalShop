@@ -233,8 +233,8 @@ public class AdminController extends BaseAdminController<Admin>{
 		}
 		redirect("/admin/login");
 	}
-	
-	// 后台首页
+
+// 后台首页
 	@RequiresRoles(value={"ROLE_ADMIN","ROLE_SERVICE"},logical=Logical.OR)
 	@RequiresPermissions("admin")
 	public void index(){	
