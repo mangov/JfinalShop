@@ -9,6 +9,7 @@ import org.beetl.core.Function;
 
 
 public class I18n implements Function {
+
 	
 	public Object call(Object[] obj, Context context) {
 		HttpServletRequest req = (HttpServletRequest) context.getGlobal("request");
@@ -20,3 +21,6 @@ public class I18n implements Function {
 	}
 
 }
+
+
+

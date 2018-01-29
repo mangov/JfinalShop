@@ -12,7 +12,7 @@ public class MailConfig {
 	public static final String SMTP_TEST = "smtpTest";// SMTP邮箱配置测试
 	public static final String PASSWORD_RECOVER = "passwordRecover";// 密码找回
 	
-	private String name;// 配置名称
+	private String name;// 配置名称x
 	private String description;// 描述
 	private String subject;// 主题
 	private String templateFilePath;// Beetl模板文件路径

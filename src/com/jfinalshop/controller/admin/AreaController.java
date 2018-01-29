@@ -57,6 +57,8 @@ public class AreaController extends BaseAdminController<Area>{
 		}
 		render("/admin/area_input.html");
 	}
+
+
 	
 	// 编辑
 	public void edit() {

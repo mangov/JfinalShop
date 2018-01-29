@@ -37,6 +37,9 @@ public class MemberAttribute extends Model<MemberAttribute>{
 		JSONArray jsonArray = JSONArray.parseArray((attributeOptionStore));		
 		for(int i = 0; i < jsonArray.size(); i++){
 			list.add(jsonArray.get(i).toString());
+
+
+
 		}
 		return list;
 	}

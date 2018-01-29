@@ -52,6 +52,7 @@ public class AdminProfileController extends BaseAdminController<Admin> {
 	public void checkCurrentPassword() {
 		currentPassword = getPara("currentPassword","");
 		Admin admin = Admin.dao.findById(currentId);
+		
 		if (StringUtils.equals(DigestUtils.md5Hex(currentPassword),admin.getStr("password"))) {
 			renderText("true");
 		} else {
